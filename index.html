@@ -1,0 +1,2363 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="教材研究、問い、子どもの現在地、活動と対話、見取り、授業後の見直しを題材に、明日の授業で変える一点を見つける50回です。">
+  <title>生成AI 50のチャレンジⅢ ～授業改善で使える生成AI～</title>
+  <style>
+    :root {
+      --ink: #203047;
+      --muted: #5c6878;
+      --paper: #fffdf7;
+      --surface: #fff;
+      --focus: #005fcc;
+      --radius: 14px;
+      --shadow: 0 8px 24px rgb(32 48 71 / 10%);
+      --content-width: 1120px;
+      --label-size: 0.82rem;
+
+      /* 相談の型ごとの色。ラベルとアイコンが主、色は従。
+         色が見分けられなくても、ラベルだけで何をする回か決まるようにしてある。 */
+      --see-line: #185fa5;
+      --see-bg: #e6f1fb;
+      --see-ink: #0c447c;
+
+      --make-line: #0f6e56;
+      --make-bg: #e1f5ee;
+      --make-ink: #085041;
+
+      --compare-line: #534ab7;
+      --compare-bg: #eeedfe;
+      --compare-ink: #3c3489;
+
+      --doubt-line: #a3701a;
+      --doubt-bg: #faeeda;
+      --doubt-ink: #633806;
+
+      --other-line: #0d6c6e;
+      --other-bg: #e2f2f1;
+      --other-ink: #08494b;
+
+      --change-line: #4a6b1f;
+      --change-bg: #eef4e2;
+      --change-ink: #33490f;
+
+      --fill-line: #a3701a;
+      --fill-bg: #faeeda;
+      --fill-ink: #633806;
+
+      /* AIの回答。淡いピンクは、画面の中でここだけに使う。
+         自分が手を動かすところ（白）と、AIが返してくるところ（ピンク）を、
+         読む前に見分けられるようにするための色。 */
+      --reply-line: #c96a8c;
+      --reply-bg: #fdeaf0;
+
+      /* 注意。淡いオレンジ。この色は他の役割で使わない。
+         「疑って」の琥珀色（--doubt-bg）と近くならないよう、桃色寄りに振ってある。 */
+      --warn-line: #c2571a;
+      --warn-bg: #fbdcc4;
+      --warn-ink: #7a3208;
+
+      --done: #1f7a5c;
+    }
+
+    *,
+    *::before,
+    *::after { box-sizing: border-box; }
+
+    html {
+      color: var(--ink);
+      background: var(--paper);
+      scroll-behavior: smooth;
+      scroll-padding-top: 1rem;
+    }
+
+    body {
+      margin: 0;
+      line-height: 1.7;
+      font-family: "BIZ UDPGothic", "Yu Gothic", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+    }
+
+    h1, h2, h3, h4, p, ol, ul { margin-block-start: 0; }
+    h1, h2 { line-height: 1.35; text-wrap: balance; }
+    a { color: #0b4f7a; text-underline-offset: .2em; }
+    [hidden] { display: none !important; }
+
+    button {
+      min-height: 44px;
+      padding: 0.6rem 1rem;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      font: inherit;
+      font-weight: 700;
+      color: var(--ink);
+      background: var(--surface);
+      cursor: pointer;
+    }
+
+    button:hover { background: #f2f6f8; }
+    button[disabled] { opacity: .45; cursor: default; }
+    button[disabled]:hover { background: var(--surface); }
+
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+    .icon { flex: none; vertical-align: -0.2em; }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      inset-block-start: 0.5rem;
+      inset-inline-start: 0.5rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      color: #fff;
+      background: var(--focus);
+      transform: translateY(-150%);
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    .hero {
+      padding: clamp(2.5rem, 7vw, 5rem) max(1.5rem, calc((100% - var(--content-width)) / 2));
+      color: #fff;
+      background: #234f58;
+    }
+
+    .hero__inner { max-width: 820px; }
+
+    .hero h1 {
+      margin-block-end: 0.75rem;
+      font-size: clamp(1.7rem, 4.4vw, 3.1rem);
+    }
+
+    .hero__lead {
+      margin-block-end: 0.4rem;
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+      font-weight: 700;
+    }
+
+    .hero__note {
+      margin-block-end: 0;
+      color: #ffe9a8;
+      font-weight: 700;
+    }
+
+    .site-main {
+      width: min(calc(100% - 3rem), var(--content-width));
+      margin-inline: auto;
+      padding-block: clamp(2rem, 5vw, 3.5rem) 5rem;
+    }
+
+    .field-note {
+      margin-block-end: 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .guide,
+    .summary,
+    .panel {
+      margin-block-end: 1.25rem;
+      padding: clamp(1.1rem, 3vw, 1.75rem);
+      border: 1px solid #dce6e5;
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .guide h2,
+    .panel h2 {
+      margin-block-end: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .guide p { margin-block-end: 0.6rem; }
+    .guide p:last-child { margin-block-end: 0; }
+    .guide ul { margin-block-end: 0; padding-inline-start: 1.3rem; }
+    .guide li { margin-block-end: 0.35rem; }
+
+    .summary__count { margin-block-end: 0.25rem; font-size: 1.05rem; }
+    .summary__count strong { font-size: 1.6rem; }
+
+    .reset-controls { margin-block-end: 1.25rem; }
+
+    .reset-confirmation {
+      margin-block-start: 0.75rem;
+      padding: 1rem;
+      border: 1px solid #bdccd2;
+      border-radius: 0.75rem;
+      background: #f5f9f8;
+    }
+
+    .reset-confirmation p { margin-block-end: 0.75rem; font-weight: 700; }
+    .reset-confirmation button + button { margin-inline-start: 0.5rem; }
+
+    .quiet-button {
+      border-color: #c3ccd4;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .storage-warning {
+      margin-block-end: 1.25rem;
+      padding: 0.85rem 1rem;
+      border: 2px solid var(--warn-line);
+      border-radius: 0.75rem;
+      background: var(--warn-bg);
+      color: var(--warn-ink);
+      font-weight: 700;
+    }
+
+    /* ---- 折りたたみ ---- */
+
+    .fold {
+      margin-block-end: 1.25rem;
+      border: 1px solid #dce6e5;
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .fold > summary {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-height: 52px;
+      padding: 0.85rem clamp(1.1rem, 3vw, 1.75rem);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .fold > summary::marker { color: #45707a; }
+    .fold[open] > summary { border-block-end: 1px solid #e2eae9; background: #f4f8f7; }
+    .fold__body { padding: clamp(1.1rem, 3vw, 1.75rem); }
+    .fold__body > :last-child { margin-block-end: 0; }
+
+    /* ---- 段階マップ ---- */
+
+    .panel__lead { margin-block-end: 1rem; color: var(--muted); font-size: 0.92rem; }
+
+    .start-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-block-end: 1.25rem;
+    }
+
+    .start-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #fff;
+      border-color: var(--ink);
+      background: var(--ink);
+    }
+
+    .start-button:hover { background: #34455e; }
+    .start-button__count { font-weight: 400; color: #cfd8e0; }
+
+    .level-map {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.55rem;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .level-button {
+      display: block;
+      width: 100%;
+      min-height: 118px;
+      padding: 0.9rem 0.75rem;
+      border: 1px solid #d8e0e5;
+      border-block-start: 6px solid var(--level-color, #234f58);
+      border-radius: 0.75rem;
+      text-align: start;
+      background: #fbfdfc;
+    }
+
+    .level-button[aria-pressed="true"] {
+      color: #fff;
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .level-button__step {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: var(--muted);
+    }
+
+    .level-button[aria-pressed="true"] .level-button__step { color: #b8c6d4; }
+
+    .level-button__name { display: block; margin-block-start: 0.3rem; font-size: 1.05rem; }
+    .level-button__verb { display: block; font-size: 0.78rem; font-weight: 400; color: var(--muted); }
+    .level-button[aria-pressed="true"] .level-button__verb { color: #cfd8e0; }
+
+    .level-button__state {
+      display: block;
+      min-height: 1.2rem;
+      margin-block-start: 0.35rem;
+      font-size: 0.72rem;
+      color: var(--done);
+    }
+
+    .level-button[aria-pressed="true"] .level-button__state { color: #9fe0c8; }
+
+    /* ---- 段階の説明 ---- */
+
+    .level-guide {
+      margin-block-end: 1.25rem;
+      border: 1px solid #dce6e5;
+      border-block-start: 8px solid var(--guide-color, #234f58);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .level-guide__head {
+      display: flex;
+      align-items: baseline;
+      gap: 0.9rem;
+      padding: clamp(1.1rem, 3vw, 1.6rem);
+      border-block-end: 1px solid #e6ecec;
+    }
+
+    .level-guide__number {
+      flex: none;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      font-weight: 700;
+      line-height: 1;
+      color: var(--guide-color, #234f58);
+    }
+
+    .level-guide__head h3 { margin-block-end: 0.25rem; font-size: clamp(1.15rem, 3vw, 1.5rem); }
+    .level-guide__head p { margin-block-end: 0; color: var(--muted); font-size: 0.92rem; }
+
+    .level-guide__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .level-guide__cell {
+      min-width: 0;
+      padding: clamp(1rem, 2.5vw, 1.35rem);
+      border-inline-end: 1px solid #e6ecec;
+    }
+
+    .level-guide__cell:last-child { border-inline-end: 0; }
+
+    .level-guide__cell h4 {
+      margin-block-end: 0.5rem;
+      font-size: var(--label-size);
+      color: #3d6570;
+    }
+
+    .level-guide__cell ul { margin: 0; padding-inline-start: 1.1rem; font-size: 0.92rem; }
+    .level-guide__cell li { margin-block-end: 0.3rem; }
+
+    .level-guide__next {
+      padding: clamp(1rem, 2.5vw, 1.35rem);
+      background: #eef2f4;
+      font-size: 0.95rem;
+    }
+
+    .level-guide__next strong { display: block; }
+
+    /* ---- 今日の一つ ---- */
+
+    .today {
+      margin-block-end: 1.25rem;
+      padding: clamp(1.1rem, 3vw, 1.75rem);
+      border-radius: var(--radius);
+      color: #fff;
+      background: #234f58;
+      box-shadow: var(--shadow);
+    }
+
+    .today__label {
+      margin-block-end: 0.35rem;
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: #ffe9a8;
+    }
+
+    .today h2 { margin-block-end: 0.75rem; font-size: 1.15rem; }
+
+    .today__prompt {
+      margin-block-end: 0.6rem;
+      padding: 0.85rem 1rem;
+      border-radius: 0.6rem;
+      border-inline-start: 5px solid #ffe9a8;
+      color: var(--ink);
+      background: var(--surface);
+      font-size: 1.02rem;
+      font-weight: 700;
+      line-height: 1.8;
+    }
+
+    .today__meta { display: block; margin-block-end: 0.75rem; font-size: 0.82rem; color: #cfe0e2; }
+
+    .today__actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+    /* ---- 診断結果 ---- */
+
+    .result {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+      margin-block-end: 1.25rem;
+      padding: 1rem 1.15rem;
+      border: 1px solid #bdd2d0;
+      border-radius: var(--radius);
+      background: #e9f4f1;
+    }
+
+    .result__badge {
+      flex: none;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      color: #fff;
+      background: #1f6b63;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .result__text { flex: 1 1 16rem; margin-block-end: 0; }
+    .result__text strong { display: block; font-size: 1.05rem; }
+    .result__text span { font-size: 0.9rem; color: #3d5a58; }
+
+    .type-result { margin-block-end: 1.25rem; }
+    .type-result h3 { margin-block-end: 0.4rem; font-size: 1.05rem; }
+    .type-result p { margin-block-end: 0.75rem; font-size: 0.93rem; color: var(--muted); }
+    .type-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+    .type-chip {
+      padding: 0.25rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #fff;
+      background: var(--type-color, #234f58);
+    }
+
+    /* ---- 4つの活用タイプ ---- */
+
+    .type-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.8rem;
+      margin-block-end: 1.25rem;
+    }
+
+    .type-card {
+      min-width: 0;
+      padding: 1rem 1.1rem;
+      border: 1px solid #dce6e5;
+      border-block-start: 5px solid var(--type-color, #234f58);
+      border-radius: 0.75rem;
+      background: #fbfdfc;
+    }
+
+    .type-card__verb { font-size: 0.76rem; font-weight: 700; color: var(--type-color, #234f58); }
+    .type-card h3 { margin-block: 0.3rem 0.3rem; font-size: 1.05rem; }
+    .type-card p { margin-block-end: 0; font-size: 0.88rem; color: var(--muted); }
+
+    .practice-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.7rem;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .practice {
+      display: flex;
+      gap: 0.7rem;
+      padding: 0.85rem 1rem;
+      border: 1px solid #dce6e5;
+      border-radius: 0.75rem;
+      background: #fbfdfc;
+    }
+
+    .practice--application { border-color: #dfb8a8; background: #fdf4ef; }
+
+    .practice__num {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--ink);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .practice h3 { margin-block-end: 0.15rem; font-size: 0.96rem; }
+    .practice p { margin-block-end: 0; font-size: 0.85rem; color: var(--muted); }
+
+    .practice__scope {
+      display: inline-block;
+      margin-block-start: 0.35rem;
+      padding: 0.1rem 0.5rem;
+      border: 1px solid #d6a38f;
+      border-radius: 999px;
+      background: #fff;
+      color: #76361f;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    /* ---- 絞り込み ---- */
+
+    .filter-bar {
+      margin-block-end: 2rem;
+      padding-block: 1rem;
+      border-block: 1px solid #dce2e7;
+    }
+
+    .filter-bar__label { margin-block-end: 0.6rem; font-size: var(--label-size); color: var(--muted); }
+
+    .filter-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .filter-button { display: inline-flex; align-items: center; gap: 0.5rem; }
+    .filter-button__count { font-size: 0.8rem; font-weight: 400; color: var(--muted); }
+    .filter-button[aria-pressed="true"] { color: #fff; background: var(--ink); }
+    .filter-button[aria-pressed="true"] .filter-button__count { color: #cfd8e0; }
+
+    .level-filter { margin-block-start: 0.8rem; }
+
+    .level-filter button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      border-color: #45707a;
+      color: #2b5c66;
+    }
+
+    .level-filter button[aria-pressed="true"] { color: #fff; background: #2b5c66; }
+
+    /* ---- 一覧 ---- */
+
+    .list-section h2 { margin-block-end: 1rem; font-size: 1.3rem; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.1rem;
+    }
+
+    .empty-note {
+      grid-column: 1 / -1;
+      padding: 2rem;
+      border: 1px dashed #b6c4cb;
+      border-radius: var(--radius);
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1.1rem;
+      border: 1px solid #d8e0e5;
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .card--tried { background: #f7fbf9; }
+
+    .card__top { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-block-end: 0; }
+    .card__prompt { margin-block: 0.15rem; font-size: 1.06rem; line-height: 1.65; }
+    .card__note { margin-block-end: 0; font-size: 0.85rem; color: var(--muted); }
+
+    .card__status {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      margin-block: auto 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .card--tried .card__status { color: var(--done); font-weight: 700; }
+    .card__open { width: 100%; }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: #eef2f4;
+      color: #41505f;
+    }
+
+    .chip--see { background: var(--see-bg); color: var(--see-ink); }
+    .chip--make { background: var(--make-bg); color: var(--make-ink); }
+    .chip--compare { background: var(--compare-bg); color: var(--compare-ink); }
+    .chip--doubt { background: var(--doubt-bg); color: var(--doubt-ink); }
+    .chip--other { background: var(--other-bg); color: var(--other-ink); }
+    .chip--change { background: var(--change-bg); color: var(--change-ink); }
+    .chip--tried { background: #e6f4ee; color: #14543f; }
+
+    .chip--step {
+      background: transparent;
+      border: 1px solid #c3ccd4;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* ---- 詳細 ---- */
+
+    .detail__meta { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-block-end: 0.85rem; }
+    .detail__intro { margin-block-end: 1.5rem; }
+    .detail__intro p { margin-block-end: 0.4rem; }
+    .detail__intro p:last-child { margin-block-end: 0; }
+
+    /* 自分が送る2回だけに番号を振る。AIの回答は自分の操作ではないので番号を持たない。
+       縦線は、送る1回目から2回目までを一続きに見せるためだけに引く。 */
+    .stage-flow { position: relative; counter-reset: stage; }
+
+    .stage-flow::before {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      inset-inline-start: 1.05rem;
+      inset-block-start: 0.9rem;
+      inset-block-end: 0.9rem;
+      width: 2px;
+      background: #c3ccd4;
+    }
+
+    .stage-flow > .block,
+    .stage-flow > .reply { position: relative; z-index: 1; }
+
+    .stage-flow > .block::before {
+      counter-increment: stage;
+      content: counter(stage);
+      position: absolute;
+      z-index: 2;
+      inset-inline-start: 0.1rem;
+      inset-block-start: 0.05rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.9rem;
+      height: 1.9rem;
+      border-radius: 50%;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    /* 回答は番号を持たない。番号の代わりに、線の上に丸だけを置いて流れを切らない。 */
+    .stage-flow > .reply::before {
+      content: "";
+      position: absolute;
+      z-index: 2;
+      inset-inline-start: 0.48rem;
+      inset-block-start: 0.7rem;
+      width: 1.15rem;
+      height: 1.15rem;
+      border: 2px solid var(--reply-line);
+      border-radius: 50%;
+      background: var(--reply-bg);
+    }
+
+    .block {
+      margin-block-end: 1rem;
+      padding-inline-start: 2.6rem;
+      border-inline-start: 4px solid #c3ccd4;
+    }
+
+    .block__label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-block-end: 0.6rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .block--see { border-inline-start-color: var(--see-line); }
+    .block--see .block__label { background: var(--see-bg); color: var(--see-ink); }
+    .block--make { border-inline-start-color: var(--make-line); }
+    .block--make .block__label { background: var(--make-bg); color: var(--make-ink); }
+    .block--compare { border-inline-start-color: var(--compare-line); }
+    .block--compare .block__label { background: var(--compare-bg); color: var(--compare-ink); }
+    .block--doubt { border-inline-start-color: var(--doubt-line); }
+    .block--doubt .block__label { background: var(--doubt-bg); color: var(--doubt-ink); }
+    .block--other { border-inline-start-color: var(--other-line); }
+    .block--other .block__label { background: var(--other-bg); color: var(--other-ink); }
+    .block--change { border-inline-start-color: var(--change-line); }
+    .block--change .block__label { background: var(--change-bg); color: var(--change-ink); }
+    .block--fill { border-inline-start-color: var(--fill-line); }
+    .block--fill .block__label { background: var(--fill-bg); color: var(--fill-ink); }
+
+    .steps { margin-block-end: 0.75rem; padding-inline-start: 1.4rem; }
+    .steps__item { margin-block-end: 0.3rem; }
+
+    /* 手順の中に置くが、指で押せる大きさを確保するため独立した行にする。 */
+    .help { display: block; }
+
+    .help__button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      min-height: 44px;
+      padding: 0.2rem 0.6rem;
+      border: 0;
+      border-radius: 0.4rem;
+      font-size: 0.88rem;
+      font-weight: 400;
+      color: var(--focus);
+      background: none;
+      text-decoration: underline;
+    }
+
+    .help__panel {
+      display: block;
+      margin-block: 0.35rem;
+      padding: 0.6rem 0.8rem;
+      border-radius: 0.6rem;
+      background: #eef2f7;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: #2c3a4a;
+    }
+
+    .prompt {
+      margin-block-end: 0;
+      padding: 0.85rem 1rem;
+      border: 2px solid var(--ink);
+      border-radius: 0.6rem;
+      background: var(--surface);
+      font-family: "BIZ UDGothic", "Yu Gothic", sans-serif;
+      font-size: 1.02rem;
+      line-height: 1.8;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .block--see .prompt { border-color: var(--see-line); }
+    .block--make .prompt { border-color: var(--make-line); }
+    .block--compare .prompt { border-color: var(--compare-line); }
+    .block--doubt .prompt { border-color: var(--doubt-line); }
+    .block--other .prompt { border-color: var(--other-line); }
+    .block--change .prompt { border-color: var(--change-line); }
+
+    .prompt--fill {
+      border-color: var(--fill-line);
+      background: var(--fill-bg);
+      color: var(--fill-ink);
+    }
+
+    /* 全50回に共通で付く制約。本文と混ざらないよう行を分ける。 */
+    .prompt__limits {
+      display: block;
+      margin-block-start: 0.5rem;
+      font-size: 0.92rem;
+    }
+
+    .blank-input {
+      min-width: 8rem;
+      max-width: 100%;
+      min-height: 44px;
+      padding: 0.3rem 0.6rem;
+      border: 2px solid var(--fill-line);
+      border-radius: 0.5rem;
+      font: inherit;
+      color: var(--ink);
+      background: #fffdf5;
+    }
+
+    .hints {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-block-end: 0.6rem;
+    }
+
+    .hints__label { font-size: var(--label-size); color: var(--muted); }
+
+    .hint {
+      padding: 0.2rem 0.85rem;
+      border-color: var(--fill-line);
+      color: var(--fill-ink);
+      font-size: 0.88rem;
+      font-weight: 400;
+      background: #fffdf5;
+    }
+
+    .copy-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      width: 100%;
+      margin-block-start: 0.6rem;
+      color: #fff;
+      border-color: var(--ink);
+      background: var(--ink);
+    }
+
+    .copy-button:hover { background: #34455e; }
+
+    .block--see .copy-button { border-color: var(--see-line); background: var(--see-line); }
+    .block--make .copy-button { border-color: var(--make-line); background: var(--make-line); }
+    .block--compare .copy-button { border-color: var(--compare-line); background: var(--compare-line); }
+    .block--doubt .copy-button { border-color: var(--doubt-line); background: var(--doubt-line); }
+    .block--other .copy-button { border-color: var(--other-line); background: var(--other-line); }
+    .block--change .copy-button { border-color: var(--change-line); background: var(--change-line); }
+    .block--fill .copy-button { border-color: #7d5612; background: #7d5612; }
+
+    /* 自分の操作（白い枠）と並べたとき、ここだけがAIの側だと分かるようにする。 */
+    .reply {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-block: 1.1rem;
+      padding: 0.7rem 0.9rem 0.7rem 2.6rem;
+      border-inline-start: 4px solid var(--reply-line);
+      border-radius: 0.6rem;
+      background: var(--reply-bg);
+      font-size: 0.95rem;
+    }
+
+    .reply__label { display: block; font-weight: 700; }
+
+    /* 回答に添える判断の一文。記入欄ではなく文で伝える。 */
+    .reply__decide { display: block; margin-block-start: 0.35rem; font-weight: 700; }
+
+    /* 最後に手元へ書き留めることを伝える一文。画面に記入欄は置かない。 */
+    .closing-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-block: 1.1rem;
+      padding: 0.7rem 0.9rem;
+      border-radius: 0.6rem;
+      background: #eef2f4;
+      font-size: 0.95rem;
+    }
+
+    .safety {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-block: 1.25rem 0;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid var(--warn-line);
+      border-radius: 0.6rem;
+      background: var(--warn-bg);
+      color: var(--warn-ink);
+      font-size: 0.9rem;
+    }
+
+    .detail__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-block-start: 1.25rem;
+      padding-block-start: 1rem;
+      border-block-start: 1px solid #dce2e7;
+    }
+
+    .tried-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-color: var(--done);
+      color: var(--done);
+    }
+
+    .tried-button--on { color: #fff; background: var(--done); }
+    .tried-button--on:hover { background: #196349; }
+
+    /* ---- ダイアログ ---- */
+
+    dialog {
+      width: min(680px, calc(100% - 2rem));
+      max-height: calc(100vh - 2rem);
+      max-height: calc(100dvh - 2rem);
+      padding: clamp(1.1rem, 3vw, 1.75rem);
+      overflow: auto;
+      border: 0;
+      border-radius: var(--radius);
+      color: var(--ink);
+      background: var(--surface);
+      box-shadow: 0 24px 60px rgb(20 31 45 / 35%);
+    }
+
+    dialog::backdrop { background: rgb(20 31 45 / 68%); }
+
+    .dialog-header {
+      position: sticky;
+      z-index: 2;
+      inset-block-start: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-block-end: 0.75rem;
+      padding-block: 0.25rem 0.6rem;
+      background: var(--surface);
+    }
+
+    .dialog-header h2 { margin-block-end: 0; font-size: 1.15rem; }
+    .dialog-header button { flex: none; padding-inline: 0.9rem; }
+
+    /* ---- 診断 ---- */
+
+    .progress-track {
+      height: 6px;
+      margin-block-end: 1.25rem;
+      border-radius: 999px;
+      background: #e6ecec;
+      overflow: hidden;
+    }
+
+    .progress-bar { height: 100%; background: #2b5c66; transition: width 180ms ease; }
+
+    .question__number { margin-block-end: 0.5rem; font-size: var(--label-size); color: var(--muted); font-weight: 700; }
+    .question fieldset { margin: 0; padding: 0; border: 0; }
+    .question legend { margin-block-end: 1rem; font-size: clamp(1.1rem, 3vw, 1.35rem); font-weight: 700; line-height: 1.5; }
+    .question__note { margin-block: -0.5rem 0.9rem; font-size: 0.88rem; color: var(--muted); }
+
+    .option-list { display: grid; gap: 0.5rem; }
+
+    .option {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.7rem;
+      align-items: start;
+      min-height: 48px;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid #d8e0e5;
+      border-radius: 0.6rem;
+      background: #fbfdfc;
+      cursor: pointer;
+    }
+
+    .option:hover { background: #f2f6f8; }
+    .option:has(input:checked) { border-color: #2b5c66; background: #e9f4f1; box-shadow: inset 4px 0 #2b5c66; }
+    .option input { width: 1.2rem; height: 1.2rem; margin-block-start: 0.25rem; accent-color: #2b5c66; }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.6rem;
+      margin-block-start: 1.5rem;
+      padding-block-start: 1rem;
+      border-block-start: 1px solid #dce2e7;
+    }
+
+    .dialog-actions .next { color: #fff; border-color: var(--ink); background: var(--ink); }
+    .dialog-actions .next:hover { background: #34455e; }
+
+    #toast {
+      position: fixed;
+      z-index: 20;
+      inset-inline: 1rem;
+      inset-block-end: 1rem;
+      width: fit-content;
+      max-width: min(32rem, calc(100% - 2rem));
+      margin-inline: auto;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      color: #fff;
+      background: var(--ink);
+      box-shadow: var(--shadow);
+    }
+
+    #dialog-toast {
+      position: sticky;
+      z-index: 2;
+      inset-block-end: 0;
+      width: fit-content;
+      max-width: 100%;
+      margin: 1rem auto 0;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      color: #fff;
+      background: var(--ink);
+      box-shadow: var(--shadow);
+    }
+
+    #toast:empty,
+    #dialog-toast:empty { display: none; }
+
+    .site-footer {
+      padding-block: 2.5rem 3.5rem;
+      padding-inline: 1.5rem;
+      border-block-start: 1px solid #dce2e7;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .site-footer strong { color: var(--ink); }
+    .site-footer p { margin-block-end: 0.35rem; }
+
+    @media (max-width: 900px) {
+      .level-guide__grid { grid-template-columns: minmax(0, 1fr); }
+      .level-guide__cell { border-inline-end: 0; border-block-end: 1px solid #e6ecec; }
+      .level-guide__cell:last-child { border-block-end: 0; }
+    }
+
+    @media (max-width: 640px) {
+      .hero,
+      .site-main { width: 100%; padding-inline: 1rem; }
+
+      .card-grid { grid-template-columns: minmax(0, 1fr); }
+
+      .level-map { grid-template-columns: minmax(0, 1fr); }
+      .level-button { min-height: auto; border-block-start: 1px solid #d8e0e5; border-inline-start: 6px solid var(--level-color, #234f58); }
+      .level-button__step,
+      .level-button__name,
+      .level-button__verb { display: inline; margin-inline-end: 0.5rem; }
+      .level-button__state { display: block; }
+
+      .detail__actions,
+      .today__actions { display: grid; grid-template-columns: minmax(0, 1fr); }
+      .detail__actions button,
+      .today__actions button { width: 100%; }
+
+      dialog {
+        width: calc(100% - 1rem);
+        max-height: calc(100vh - 1rem);
+        max-height: calc(100dvh - 1rem);
+        padding: 1rem;
+      }
+
+      .blank-input { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media print {
+      @page { margin: 14mm; }
+      body { color: #111; background: #fff; font-size: 10pt; }
+      .skip-link,
+      .start-actions,
+      .filter-bar,
+      .reset-controls,
+      .today__actions,
+      .card__open,
+      dialog,
+      #toast { display: none !important; }
+      .hero { color: #111; background: #fff; border-block-end: 2px solid #333; }
+      .hero__note { color: #444; }
+      .guide, .panel, .card, .level-guide, .today { box-shadow: none; }
+      .today { color: #111; background: #fff; border: 2px solid #333; }
+      .today__label, .today__meta { color: #444; }
+      .card, .level-guide__cell, .practice { break-inside: avoid; }
+      .card-grid { grid-template-columns: 1fr 1fr; }
+      .fold > .fold__body { display: block !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <header class="hero">
+    <div class="hero__inner">
+      <h1>生成AI 50のチャレンジⅢ ～授業改善で使える生成AI～</h1>
+      <p class="hero__lead">気になっている授業から、ひとつ試すところから。</p>
+      <p class="hero__note">1回だけでも、順番どおりでなくてもかまいません。</p>
+    </div>
+  </header>
+
+  <main id="main" class="site-main" tabindex="-1">
+    <section class="guide" aria-labelledby="guide-title">
+      <h2 id="guide-title">使い方</h2>
+      <p>1回10分ほどです。完成した指導案を作る講座ではありません。教材研究、子どもの現在地、問い、活動と対話、見取り、授業後の見直しのどこか一点について、自分の判断を一つ前へ進めることが目的です。</p>
+      <p>回をひらくと、<strong>1回目に送る文</strong>、<strong>回答が来たら何を見るか</strong>、<strong>2回目に送る文</strong>の順に並んでいます。自分が送るのは2回です。2回目の文は全50回で共通で、空欄に自分の見立てを書いてから送ります。</p>
+      <p>AIに送る文には、<strong>Web検索をせず、渡した情報だけを使い、各項目を2文以内にする</strong>という制約が全50回とも付いています。長く整った回答や、検索してきた権威ある記述は、教師の判断を弱めます。この講座で必要なのは、短時間で吟味できる分量の回答です。</p>
+      <p>AIの回答は完成品ではなく材料です。読んだら、採用するか、直すか、使わないかを決めます。<strong>使わないという判断も、その回の結論です。</strong></p>
+      <p>最後に、次の授業で変える一点を一行だけ書き留めます。書く場所はこの画面ではなく、手元の手帳や指導案です。<strong>この画面は入力した言葉を一切保存しません。</strong>保存するのは「やってみた」の印だけです。</p>
+      <p>学習指導要領の記述や教科の理論をAIに尋ねる回はありません。AIは平然と存在しない記述を作ります。事実は原典で確かめてください。この講座でAIに渡すのは、自分が持っている教材、授業案、授業記録、自分の考えだけです。</p>
+    </section>
+
+    <section class="guide" aria-labelledby="modes-title">
+      <h2 id="modes-title">50回に散りばめてある6つの相談の型</h2>
+      <p>「指導案を作って」だけが生成AIの使い方ではありません。50回のケースには、次の6つの頼み方が仕込んであります。読み進めるうちに自然と身につきますが、先に知っておきたい人のために挙げておきます。</p>
+      <ul id="mode-legend"></ul>
+    </section>
+
+    <aside class="storage-warning" role="note">
+      <strong>入力前の約束。</strong>児童生徒の実名、成績、健康、家庭のことは入力しません。名前は「児童A」などに置き換えます。AIの回答は判定ではなく、教師が考えるための別の見方として扱います。
+    </aside>
+
+    <section id="summary" class="summary" aria-label="試した数">
+      <p>読み込んでいます。</p>
+    </section>
+
+    <div class="reset-controls" hidden>
+      <button id="reset-tried" type="button" class="quiet-button" aria-controls="reset-confirmation" aria-expanded="false">記録を消す</button>
+      <div id="reset-confirmation" class="reset-confirmation" hidden>
+        <p>「やってみた」の記録を全部消しますか？</p>
+        <button id="confirm-reset" type="button">消す</button>
+        <button id="cancel-reset" type="button" class="quiet-button">やめる</button>
+      </div>
+    </div>
+
+    <div id="storage-warning" class="storage-warning" role="status" hidden>
+      この端末では「やってみた」の記録を保存できません。記録は使えませんが、50回はそのまま使えます。
+    </div>
+
+    <section class="panel" aria-labelledby="start-title">
+      <h2 id="start-title">どこから始めるか</h2>
+      <p class="panel__lead">段階は能力の順位ではありません。今日の仕事に合う場所を、いつでも自由に選べます。迷ったら診断してください。順位を出すためではなく、最初の1回を選びやすくするためのものです。</p>
+      <div class="start-actions">
+        <button class="start-button" type="button" data-start-diagnosis>
+          <span>1分で今の段階を診断する</span><span class="start-button__count" id="question-count"></span>
+        </button>
+        <button type="button" data-pick-level="1">診断せず、入門から見る</button>
+      </div>
+      <ul class="level-map" id="level-map"></ul>
+    </section>
+
+    <div id="diagnosis-result" class="result" hidden>
+      <span class="result__badge">診断結果</span>
+      <p class="result__text"><strong id="result-title"></strong><span id="result-reason"></span></p>
+      <button class="quiet-button" type="button" id="restart-diagnosis">もう一度診断する</button>
+    </div>
+
+    <div id="type-result" class="guide type-result" hidden></div>
+
+    <div id="level-guide" class="level-guide" aria-live="polite"></div>
+
+    <section class="today" id="today" aria-labelledby="today-title">
+      <p class="today__label">まずは、これだけ</p>
+      <h2 id="today-title">この回を一つ試す</h2>
+      <p class="today__prompt" id="today-prompt"></p>
+      <span class="today__meta" id="today-meta"></span>
+      <div class="today__actions">
+        <button type="button" id="today-open">この回をひらく</button>
+        <button type="button" id="today-copy">送る文をコピー</button>
+      </div>
+    </section>
+
+    <details class="fold" id="types-fold">
+      <summary>4つの活用タイプと、8つの実践の形を見る</summary>
+      <div class="fold__body">
+        <p>同じ段階でも、よく使う場面は人によって違います。診断の最後に活用経験を選ぶと、自分のタイプが表示されます。優劣ではなく、得意な使い方の方向です。</p>
+        <div class="type-grid" id="type-grid"></div>
+        <ul class="practice-list" id="practice-list"></ul>
+      </div>
+    </details>
+
+    <nav id="filters" class="filter-bar" aria-label="授業改善の場面でしぼりこむ">
+      <p>読み込んでいます。</p>
+    </nav>
+
+    <section class="list-section" aria-labelledby="list-title">
+      <h2 id="list-title">50回の一覧</h2>
+      <div id="challenge-list" class="card-grid">
+        <p class="empty-note">読み込んでいます。</p>
+        <noscript>
+          <p class="empty-note">表示するにはJavaScriptを有効にしてください。使えない場合は<a href="授業改善の相談文集.html">印刷用の一覧</a>をご利用ください。</p>
+        </noscript>
+      </div>
+    </section>
+
+    <section class="guide" aria-labelledby="print-title">
+      <h2 id="print-title">紙で配る・持ち歩く</h2>
+      <p>50回すべてを1枚ずつ並べた印刷用の一覧があります。共通の進め方を先頭にまとめ、各回は相談文と気をつけることだけを載せてあるので、研修の配布資料や、職員室に置いておく控えとして使えます。</p>
+      <p><a href="授業改善の相談文集.html">印刷用の一覧（全50回）を開く</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>整った質問より、続く対話。</strong></p>
+    <p>まず一つ、いつもの授業について相談してみましょう。</p>
+  </footer>
+
+  <dialog id="challenge-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-header">
+      <h2 id="dialog-title">この回</h2>
+      <button id="close-dialog" type="button">閉じる</button>
+    </div>
+    <div id="challenge-detail"></div>
+    <div id="dialog-toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  </dialog>
+
+  <dialog id="diagnosis-dialog" aria-labelledby="diagnosis-title">
+    <div class="dialog-header">
+      <h2 id="diagnosis-title">今の段階を診断する</h2>
+      <button id="close-diagnosis" type="button">閉じる</button>
+    </div>
+    <div class="progress-track" id="progress-track" aria-hidden="true"><div class="progress-bar" id="progress-bar" style="width:17%"></div></div>
+    <div id="question-area" class="question"></div>
+    <div class="dialog-actions">
+      <button type="button" id="prev-question" class="quiet-button">前へ</button>
+      <button type="button" id="next-question" class="next">次へ</button>
+    </div>
+  </dialog>
+
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script id="guide-data" type="application/json">
+  {
+    "categories": [
+      {"id":"material","name":"教材研究・単元設計"},
+      {"id":"children","name":"児童生徒理解"},
+      {"id":"question","name":"問い・課題設計"},
+      {"id":"activity","name":"学習活動・学習過程"},
+      {"id":"talk","name":"発言・対話・協働"},
+      {"id":"teacher","name":"教師の働きかけ"},
+      {"id":"access","name":"多様性・参加"},
+      {"id":"assess","name":"評価・振り返り"},
+      {"id":"ict","name":"ICT・情報活用"},
+      {"id":"review","name":"授業後の分析・改善"}
+    ],
+    "modes": [
+      {"id":"make","name":"作って","icon":"pencil","description":"言葉や案を出させます。教材の本質と合うかは、こちらで確かめます。"},
+      {"id":"see","name":"見て","icon":"eye","description":"手元の記録を読ませます。判定ではなく、見落としている可能性を増やすために使います。"},
+      {"id":"compare","name":"比べて","icon":"compare","description":"並んでいるものの違いを言わせます。順位ではなく、検討材料として受け取ります。"},
+      {"id":"doubt","name":"疑って","icon":"help","description":"自分の案の弱いところを言わせます。お世辞に流れないよう、疑うことだけを頼みます。"},
+      {"id":"other","name":"別の見方","icon":"other","description":"同じ出来事を逆からも説明させます。どちらか一方に決めつけないためです。"},
+      {"id":"change","name":"一つだけ変えて","icon":"change","description":"変える場所を一つに絞らせます。明日そのまま試せる形になります。"}
+    ],
+    "sendTypes": [
+      {"id":"asis","label":"そのままコピーして送る","short":"そのままコピー","icon":"copy",
+       "steps":["下の文章をコピーします","ChatGPTなどの生成AIを開き、入力欄に貼り付けます","学年・教科・授業の場面を一言だけ足してから送信します"]},
+      {"id":"paste","label":"自分の文を貼ってから送る","short":"自分の文を貼る","icon":"paste",
+       "steps":["渡したい文を、名前を置き換えてからコピーします","生成AIの入力欄に貼り付けます","続けて下の文章を貼り付け、1回で送信します"]},
+      {"id":"attach","label":"資料を添付してから送る","short":"資料を添付","icon":"attach",
+       "steps":["渡したい資料を、名前が写り込んでいないか確かめてから添付します","下の文章を入力欄に貼り付けます","添付が済んだ状態で、1回で送信します"]}
+    ],
+    "levels": [
+      {
+        "id": 1, "name": "入門者", "verb": "まず安全に一往復する", "min": 5, "max": 8, "color": "#5d8890",
+        "summary": "生成AIへ、授業の小さな困りごとを一つ相談してみる段階です。",
+        "doing": ["短い質問を一つ入力する", "返ってきた回答から使えそうな部分を選ぶ"],
+        "grow": ["一度に授業全部を頼まず、困りごとを一つに絞る", "回答に続けて『もう少し具体的に』と聞く"],
+        "skip": ["長い万能プロンプトを覚える", "複数のAIを同時に使う"],
+        "next": "同じ相談に、条件を一つ追加して聞き直してみる。"
+      },
+      {
+        "id": 2, "name": "初心者", "verb": "雑な相談から対話で深める", "min": 9, "max": 12, "color": "#3b8587",
+        "summary": "一回の回答で終わらず、追加質問をしながら授業の考えを整える段階です。",
+        "doing": ["普段の言葉で相談を始める", "具体例や別案を追加で求める"],
+        "grow": ["学年・教科・授業場面を短く伝える", "『一つだけ変えるなら』と優先順位を聞く"],
+        "skip": ["最初から完璧な依頼文を書く", "AIの案を全部採用する"],
+        "next": "教科書の流れや自分の案を渡し、比べてもらう。"
+      },
+      {
+        "id": 3, "name": "初級者", "verb": "資料や条件を渡して比較する", "min": 13, "max": 16, "color": "#167d7f",
+        "summary": "自分の案や資料を渡し、比較・分析・改善に使う段階です。",
+        "doing": ["授業の条件や自分の案を伝える", "複数案の長所と弱点を比べる"],
+        "grow": ["事実と推測を分けて回答させる", "見落としや反対意見を一つ求める"],
+        "skip": ["大量の資料を説明なしで丸ごと渡す", "子どもをAIに判定させる"],
+        "next": "作る役とは別に、弱点だけを見る役を一人加える。"
+      },
+      {
+        "id": 4, "name": "中級者", "verb": "作成・批判・検証を分ける", "min": 17, "max": 20, "color": "#38698a",
+        "summary": "異なる視点を持つ役割に分け、案の質と安全性を高める段階です。",
+        "doing": ["事実・読み手・リスクを別々に確認する", "反対意見を担当するAIを置く"],
+        "grow": ["指摘を採用・保留・不採用に整理する", "修正後に同じ条件で再確認する"],
+        "skip": ["人数だけを増やす", "レビュー指摘を全部そのまま直す"],
+        "next": "ゴール、完了条件、停止条件を最初に設計する。"
+      },
+      {
+        "id": 5, "name": "上級者", "verb": "工程と安全境界を設計する", "min": 21, "max": 25, "color": "#775e8f",
+        "summary": "AIが作成から再検証まで進められる工程を、安全な権限の範囲で設計する段階です。",
+        "doing": ["目的・成果物・完了条件を観測可能にする", "作成・監査・修正・再検証を一つの工程にする"],
+        "grow": ["仕事の重さに応じて役割数を減らす", "人が判断する境界を毎回明示する"],
+        "skip": ["すべての仕事を複雑な仕組みにする", "削除・公開・権限変更まで自動承認する"],
+        "next": "簡単な仕事では、あえて入門的な一往復で済ませる。"
+      }
+    ],
+    "questions": [
+      {"text":"授業づくりで生成AIを使った経験は？","options":[{"label":"まだ使ったことがない","score":1},{"label":"一、二度だけ試した","score":2},{"label":"ときどき相談している","score":3},{"label":"複数の場面で使い分けている","score":4},{"label":"作業の流れとして組み込んでいる","score":5}]},
+      {"text":"最初に相談するとき、何を伝えますか？","options":[{"label":"何を伝えればよいか迷う","score":1},{"label":"やってほしいことだけ伝える","score":2},{"label":"学年や教科も伝える","score":3},{"label":"子どもの実態や授業条件も伝える","score":4},{"label":"目的・成果物・完了条件まで伝える","score":5}]},
+      {"text":"最初の回答が返ってきた後は？","options":[{"label":"読むだけで終わることが多い","score":1},{"label":"使えそうならそのまま使う","score":2},{"label":"もう少し具体的に、と聞き返す","score":3},{"label":"別案や弱点も聞く","score":4},{"label":"修正と再確認まで続けさせる","score":5}]},
+      {"text":"自分の資料や授業記録は、どう使いますか？","options":[{"label":"渡したことがない","score":1},{"label":"文章をそのまま貼る","score":2},{"label":"何を見てほしいか添えて渡す","score":3},{"label":"見る範囲と判断条件を指定する","score":4},{"label":"資料別に役割を分けて検証させる","score":5}]},
+      {"text":"出てきた案の弱いところは、どう探しますか？","options":[{"label":"弱いところを探すことはしていない","score":1},{"label":"気になったときだけ自分で見直す","score":2},{"label":"観点を一つ決めて、見落としを聞く","score":3},{"label":"反対意見だけを言う役をAIに担当させる","score":4},{"label":"別の役に検証させ、直したあとも同じ条件で確かめる","score":5}]}
+    ],
+    "types": [
+      {"id":"create","name":"作る型","verb":"形にする","color":"#0f6e56","description":"図解、ワークシート、指導案、板書案など、授業の材料を形にします。"},
+      {"id":"read","name":"読む型","verb":"読み解く","color":"#185fa5","description":"参考資料、板書、ノートなどから、気づきや見落としの可能性を増やします。"},
+      {"id":"dialogue","name":"対話型","verb":"考えを揺さぶる","color":"#534ab7","description":"生成AIを壁打ち相手にして、問いや指導案を練り上げます。"},
+      {"id":"reflect","name":"振り返り型","verb":"次へつなぐ","color":"#a3512d","description":"授業後の記録を見直し、次に一つ変えることを考えます。"}
+    ],
+    "practices": [
+      {"id":"diagram","title":"図や図解を生成する","types":["create"],"scope":"teaching","description":"概念、手順、比較を視覚化して授業に使う。"},
+      {"id":"reference-image","title":"参考資料を画像で添付する","types":["read"],"scope":"teaching","description":"資料の内容を読み取り、要点や授業での扱い方を相談する。"},
+      {"id":"board-note-photo","title":"板書やノートの写真を読ませる","types":["read","reflect"],"scope":"teaching","description":"匿名化した画像から、考えの変化やつまずきの可能性を探す。"},
+      {"id":"worksheet","title":"ワークシートを生成する","types":["create"],"scope":"teaching","description":"ねらいと活動に合う記入欄や問いを形にする。"},
+      {"id":"lesson-board-plan","title":"指導案や板書案を生成する","types":["create"],"scope":"teaching","description":"初稿を作らせ、教師が教材と学級に合わせて直す。"},
+      {"id":"sparring","title":"壁打ちで指導案を練る","types":["dialogue"],"scope":"teaching","description":"別案、反論、見落としを出させながら考えを深める。"},
+      {"id":"post-lesson","title":"授業後の振り返りに使う","types":["reflect","dialogue"],"scope":"teaching","description":"授業記録を基に、原因の仮説と次の一手を考える。"},
+      {"id":"report-comment","title":"通知票の所見文を提案させる","types":["create","reflect"],"scope":"application","description":"授業外の応用。匿名化した事実から文案を出させ、教師が確認・決定する。"}
+    ],
+    "cases": [
+      {"id":1,"category":"material","mode":"other","send":"asis","level":2,"prompt":"この単元で、子どもたちに一番考えさせたいことって何だろう？","note":"学年と単元名を添えると考えやすくなります。"},
+      {"id":2,"category":"material","mode":"compare","send":"asis","level":3,"prompt":"教科書ではこういう流れなんだけど、この学級ならどこを重点的に扱うといい？","note":"学級の様子は個人が分からない形で伝えます。"},
+      {"id":3,"category":"material","mode":"see","send":"asis","level":2,"prompt":"この教材のおもしろさって、子どもから見るとどこにある？","note":"教師の見方と子どもの見方を分けて聞きます。"},
+      {"id":4,"category":"material","mode":"change","send":"asis","level":4,"prompt":"全8時間あるんだけど、どこに時間をかけて、どこを軽くするといい？ 根拠も教えて。","note":"時数と評価規準を教師が照合します。"},
+      {"id":5,"category":"material","mode":"make","send":"asis","level":3,"prompt":"この単元の終わりに見たい子どもの姿を、知識・考え方・学び方に分けて書いて。","note":"学習指導要領や学校の計画と確認します。"},
+
+      {"id":6,"category":"children","mode":"see","send":"attach","level":2,"prompt":"この子のノートを見ると、どこまで分かっていて、どこで困っている可能性がある？","note":"個人情報は入力せず、判定ではなく可能性として扱います。"},
+      {"id":7,"category":"children","mode":"other","send":"asis","level":3,"prompt":"授業では発言しないけれど、書いていることを見ると考えている。この子をどう見るといい？","note":"個人情報を除き、見落としの可能性を増やすために使います。"},
+      {"id":8,"category":"children","mode":"doubt","send":"asis","level":3,"prompt":"この学級の子どもたち、どんなところでつまずきそう？ 決めつけずに複数挙げて。","note":"実際の姿と照合し、事前の決めつけにしません。"},
+      {"id":9,"category":"children","mode":"see","send":"paste","level":4,"prompt":"匿名にした振り返りを貼るから、共通する困りごとと例外になっている考えを分けて。","note":"個人情報を除き、元の記述を教師が確認します。"},
+      {"id":10,"category":"children","mode":"compare","send":"paste","level":4,"prompt":"匿名にした二つの振り返りを比べて、理解の違いを事実と推測に分けて整理して。","note":"AIに児童を評価・判定させません。"},
+
+      {"id":11,"category":"question","mode":"doubt","send":"asis","level":2,"prompt":"この発問、答えを当てるだけの問いになっていない？","note":"授業のねらいも添えると検討しやすくなります。"},
+      {"id":12,"category":"question","mode":"make","send":"asis","level":1,"prompt":"子どもが『え？』と立ち止まりそうな問いに変えて。","note":"教材の本質と合うかは教師が確認します。"},
+      {"id":13,"category":"question","mode":"other","send":"asis","level":2,"prompt":"この授業で、子どもが本当に考える必要のある課題って何？","note":"一つの答えに固定せず検討材料にします。"},
+      {"id":14,"category":"question","mode":"make","send":"asis","level":1,"prompt":"『なぜでしょう』以外の聞き方を考えて。","note":"子どもが答えやすい日常語へ直します。"},
+      {"id":15,"category":"question","mode":"compare","send":"asis","level":3,"prompt":"この3つの問いを、考えが広がる問い・深まる問い・確かめる問いに分けて。","note":"分類の根拠も聞きます。"},
+
+      {"id":16,"category":"activity","mode":"doubt","send":"asis","level":2,"prompt":"説明→個人→グループ→発表という流れなんだけど、本当に全部必要？","note":"削る案だけでなく残す理由も聞きます。"},
+      {"id":17,"category":"activity","mode":"change","send":"asis","level":1,"prompt":"この45分、活動が多すぎる気がする。削るならどこ？","note":"一つに絞ると試しやすくなります。"},
+      {"id":18,"category":"activity","mode":"compare","send":"asis","level":3,"prompt":"一人で考える時間と友だちと考える時間を、どう組み合わせるといい？","note":"ねらいと子どもの実態を添えます。"},
+      {"id":19,"category":"activity","mode":"other","send":"asis","level":3,"prompt":"子どもが自分で進められる余地を、もう少し入れるならどこ？","note":"支援が必要な子の参加方法も確認します。"},
+      {"id":20,"category":"activity","mode":"compare","send":"asis","level":4,"prompt":"待つ・ヒントを出す・友だちと共有するの3案を、この場面で比べて。","note":"それぞれの利点とリスクを整理します。"},
+
+      {"id":21,"category":"talk","mode":"make","send":"asis","level":2,"prompt":"同じ子ばかり発言している。いろいろな子の考えが出る仕掛けを考えて。","note":"発言だけを参加の基準にしない案も求めます。"},
+      {"id":22,"category":"talk","mode":"doubt","send":"asis","level":3,"prompt":"話し合いをしても、自分の意見を順番に言うだけ。どこを変えればいい？","note":"子どもの性格ではなく課題や進め方を見ます。"},
+      {"id":23,"category":"talk","mode":"see","send":"paste","level":4,"prompt":"匿名にした3人の発言を貼るから、どの発言をつなぐと授業が深まりそう？","note":"発言の文脈を教師が確認します。"},
+      {"id":24,"category":"talk","mode":"make","send":"asis","level":1,"prompt":"『同じです』で終わらない聞き返しを考えて。","note":"学級で普段使う言葉へ直します。"},
+      {"id":25,"category":"talk","mode":"other","send":"asis","level":4,"prompt":"話し合いで取り上げられなかった少数意見に、授業を動かす可能性はある？","note":"多数意見だけで結論づけない視点を得ます。"},
+
+      {"id":26,"category":"teacher","mode":"compare","send":"asis","level":2,"prompt":"この場面、先生は待った方がいい？ それとも声をかけた方がいい？","note":"両方の利点とリスクを聞きます。"},
+      {"id":27,"category":"teacher","mode":"make","send":"asis","level":1,"prompt":"子どもが困っている。でも答えは教えたくない。どんな声をかければいい？","note":"実際の反応に合わせて選びます。"},
+      {"id":28,"category":"teacher","mode":"make","send":"asis","level":2,"prompt":"この子の発言に、教師ならどう返す？ 3通り考えて。","note":"個人情報を除き、返し方の違いを比較します。"},
+      {"id":29,"category":"teacher","mode":"see","send":"attach","level":4,"prompt":"この授業記録を見て、先生がしゃべりすぎているところを教えて。","note":"記録にない意図を推測で補わせません。"},
+      {"id":30,"category":"teacher","mode":"doubt","send":"asis","level":4,"prompt":"教師のこの問い返しは、子どもの考えを深めた？ それとも教師の答えへ誘導した？","note":"発言の前後を含めて検討します。"},
+
+      {"id":31,"category":"access","mode":"make","send":"asis","level":1,"prompt":"書くのが苦手な子も、この授業に参加できる方法を考えて。","note":"診断名や健康情報は入力しません。"},
+      {"id":32,"category":"access","mode":"other","send":"asis","level":3,"prompt":"一人で考えたい子が、グループ活動を無理にしなくても参加できる形はある？","note":"参加方法を一つに固定しません。"},
+      {"id":33,"category":"access","mode":"compare","send":"asis","level":3,"prompt":"早く終わる子と時間がかかる子がいる。同じ課題のままでどう対応できる？","note":"別課題に分ける前に共通の学びを考えます。"},
+      {"id":34,"category":"access","mode":"doubt","send":"asis","level":4,"prompt":"この授業、『できる子』に合わせた設計になっていないか見て。","note":"課題・時間・表現方法の観点を指定します。"},
+      {"id":35,"category":"access","mode":"see","send":"attach","level":4,"prompt":"発言や完成物には表れにくいけれど、参加していたと考えられる行動を探して。","note":"記録にある行動だけを根拠にします。"},
+
+      {"id":36,"category":"assess","mode":"see","send":"asis","level":2,"prompt":"この授業では、子どもの何を見取ればいい？","note":"評価規準とねらいを添えます。"},
+      {"id":37,"category":"assess","mode":"make","send":"asis","level":1,"prompt":"振り返りが『楽しかったです』ばかり。質問をどう変えたらいい？","note":"答えを誘導しすぎないか確認します。"},
+      {"id":38,"category":"assess","mode":"compare","send":"attach","level":4,"prompt":"匿名にした最初と最後のノートを比べて、考えがどう変わったか見て。","note":"事実と推測を分け、元の記述を確認します。"},
+      {"id":39,"category":"assess","mode":"doubt","send":"asis","level":3,"prompt":"この評価規準と今日の活動、本当につながっている？","note":"活動で見取れないものを無理に評価しません。"},
+      {"id":40,"category":"assess","mode":"see","send":"paste","level":4,"prompt":"この見取りは、子どものどの言葉や行動を根拠にしている？ 根拠が弱い部分も示して。","note":"AIの解釈を教師が再確認します。"},
+
+      {"id":41,"category":"ict","mode":"doubt","send":"asis","level":2,"prompt":"この活動、タブレットを使う意味ある？","note":"紙の場合との違いを聞きます。"},
+      {"id":42,"category":"ict","mode":"change","send":"asis","level":3,"prompt":"子どもが検索して一番上のサイトを写して終わる。課題をどう変えればいい？","note":"情報の比較と根拠確認を含めます。"},
+      {"id":43,"category":"ict","mode":"make","send":"asis","level":5,"prompt":"生成AIを使っても、子ども自身が根拠を確かめて考え直す必要がある課題にして。完成条件も付けて。","note":"利用規程、年齢条件、アカウント管理を確認します。"},
+      {"id":44,"category":"ict","mode":"compare","send":"asis","level":3,"prompt":"紙・タブレット・生成AIのどれを使うのがよいか、この活動で比べて。","note":"便利さだけでなく思考と共有を比較します。"},
+      {"id":45,"category":"ict","mode":"doubt","send":"asis","level":4,"prompt":"生成AIの回答をそのまま信じないために、子どもが確かめる手順を活動に入れて。","note":"一次情報や複数資料との照合を含めます。"},
+
+      {"id":46,"category":"review","mode":"see","send":"paste","level":3,"prompt":"今日の授業記録を貼るから、子どもの考えが動いたところを探して。","note":"匿名化し、記録にない内容を補わせません。"},
+      {"id":47,"category":"review","mode":"other","send":"asis","level":2,"prompt":"なんとなくうまくいかなかった。考えられる原因を3つ挙げて。","note":"一つに断定せず確かめ方も聞きます。"},
+      {"id":48,"category":"review","mode":"other","send":"asis","level":3,"prompt":"予定と違った展開になったけれど、むしろ生かせそうなところはある？","note":"計画どおりだけを成功基準にしません。"},
+      {"id":49,"category":"review","mode":"change","send":"asis","level":4,"prompt":"次に同じ授業をするなら、一つだけ変えるとしたらどこ？","note":"根拠と期待する変化も聞きます。"},
+      {"id":50,"category":"review","mode":"compare","send":"paste","level":5,"prompt":"授業前の予想と実際の記録を比べて、当たった見立て・外れた見立て・次に確かめたいことを整理して。","note":"教師の予想を正当化するためでなく更新するために使います。"}
+    ]
+  }
+  </script>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const data = JSON.parse(document.getElementById("guide-data").textContent);
+
+      // 操作の種類を表す小さな図形。色が見分けられない人にも形で伝わるようにする。
+      const ICON_PATHS = {
+        copy: ["M9 9h10v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V11a2 2 0 0 1 2-2Z", "M15 6.5V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h1.5"],
+        paste: ["M8 4h8a1 1 0 0 1 1 1v2H7V5a1 1 0 0 1 1-1Z", "M10 4V3h4v1", "M7 6H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-1", "M9 13h6M9 17h4"],
+        attach: ["M20 11.5 12.4 19a4.6 4.6 0 0 1-6.5-6.5l7.6-7.6a3.1 3.1 0 0 1 4.4 4.4l-7.6 7.6a1.5 1.5 0 0 1-2.2-2.2l7-7"],
+        pencil: ["M4 20h4l10-10a2.1 2.1 0 0 0-3-3L5 17v3Z", "M14.5 6.5l3 3"],
+        eye: ["M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z", "M12 9.3a2.7 2.7 0 1 0 0 5.4 2.7 2.7 0 0 0 0-5.4Z"],
+        compare: ["M12 4.5v15", "M5 8.5h14", "M5 8.5 2.4 15h5.2L5 8.5Z", "M19 8.5 16.4 15h5.2L19 8.5Z"],
+        other: ["M4.2 9.5A8 8 0 0 1 18 6.2", "M18.5 3v3.5H15", "M19.8 14.5A8 8 0 0 1 6 17.8", "M5.5 21v-3.5H9"],
+        change: ["M3.5 8h4", "M13.5 8h7", "M10.5 8m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0", "M3.5 16h7", "M16.5 16h4", "M13.5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0"],
+        warning: ["M12 4 2.8 20h18.4L12 4Z", "M12 10v4.5", "M12 17.4h.01"],
+        help: ["M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z", "M9.6 9.4a2.5 2.5 0 0 1 4.8.8c0 1.7-2.4 2.1-2.4 3.6", "M12 17.2h.01"],
+        arrow: ["M12 4v15", "M6.5 13.5 12 19l5.5-5.5"],
+        check: ["M4.5 12.5 9.5 17.5 19.5 6.5"],
+        flag: ["M6 4v16", "M6 5h11l-2 3.5L17 12H6"],
+      };
+
+      function createIcon(name, size = 18) {
+        const paths = ICON_PATHS[name];
+        if (!paths) return null;
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("class", "icon");
+        svg.setAttribute("viewBox", "0 0 24 24");
+        svg.setAttribute("width", String(size));
+        svg.setAttribute("height", String(size));
+        svg.setAttribute("fill", "none");
+        svg.setAttribute("stroke", "currentColor");
+        svg.setAttribute("stroke-width", "1.7");
+        svg.setAttribute("stroke-linecap", "round");
+        svg.setAttribute("stroke-linejoin", "round");
+        svg.setAttribute("aria-hidden", "true");
+        svg.setAttribute("focusable", "false");
+        for (const d of paths) {
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute("d", d);
+          svg.append(path);
+        }
+        return svg;
+      }
+
+      function el(tag, options = {}, children = []) {
+        const node = document.createElement(tag);
+        for (const [key, value] of Object.entries(options)) {
+          if (key === "className") node.className = value;
+          else if (key === "text") node.textContent = value;
+          else if (key === "style") node.setAttribute("style", value);
+          else if (key.startsWith("data-") || key.startsWith("aria-")) node.setAttribute(key, value);
+          else node[key] = value;
+        }
+        node.append(...children.filter(Boolean));
+        return node;
+      }
+
+      // ---- 全50回で共通の文言 ----
+
+      const PROMPT_LIMITS = "Web検索はせず、ここに書いた情報だけを使ってください。各項目は2文以内で書いてください。";
+      const MATERIAL_LIMITS = {
+        paste: "貼った内容にない一般論は足さないでください。",
+        attach: "資料にない一般論は足さないでください。",
+      };
+
+      const REPLY_NOTE = "AIから回答が来ます。読む前に、自分ならどう答えるかを一つ決めてから読みます。そうしないと、AIの言葉に引っ張られます。";
+      const DECIDE_NOTE = "読んだら、採用するか、直すか、使わないかを決めます。使わないという判断も、その回の結論です。";
+      const CLOSING_NOTE = "最後に、次の授業で変える一点を一行だけ書き留めます。授業案ではなく、発問、順番、時間の使い方、見取る場面のような、実行できる形にします。書く場所はこの画面ではなく、手元の手帳や指導案です。";
+      const SAFETY_BASE = "子どもの名前は「児童A」などに置き換えます。学習の記録、健康に関すること、家庭のことは入力しません。";
+
+      // 2回目は全50回で共通。回ごとに書き分けず、出た案に反証を求める型だけを渡す。
+      const FOLLOW_UP = {
+        template: "いま出た案のうち「____」を試します。この案がうまくいかないのは、どんな場合ですか。1つだけ挙げてください。",
+        hints: ["最初に出た案", "いちばん手軽にできそうな案", "自分では思いつかなかった案"],
+        steps: ["下の空欄を、自分の言葉でうめます", "できた文を、同じ会話の中で新しいメッセージとして送信します"],
+      };
+
+      const HELP_TEXTS = {
+        attach: "ChatGPTなら入力欄の左にあるクリップ（＋）の形のボタンです。押すと「写真を撮る」「ファイルを選ぶ」が出ます。Geminiなら画像のアイコンです。",
+        once: "送信は1回だけです。先に資料や自分の文を送ってから文章を別に送るのではなく、添付や貼り付けが済んだ状態で文章を入れて、1回押します。",
+        newmsg: "同じ会話の続きに、もう一度入力して送ります。新しい会話を始める必要はありません。前のやりとりはAIが覚えています。",
+      };
+
+      const BLANK_MARKER = "____";
+      const BLANK_PLACEHOLDER = "　　　　";
+
+      const STORAGE_KEY = "ai50-3-tried";
+      const TOTAL = data.cases.length;
+
+      const categoryName = Object.fromEntries(data.categories.map((item) => [item.id, item.name]));
+      const modeById = Object.fromEntries(data.modes.map((item) => [item.id, item]));
+      const sendTypeById = Object.fromEntries(data.sendTypes.map((item) => [item.id, item]));
+      const levelById = Object.fromEntries(data.levels.map((item) => [item.id, item]));
+
+      function promptLimits(sendId) {
+        const material = MATERIAL_LIMITS[sendId];
+        return material ? material + PROMPT_LIMITS : PROMPT_LIMITS;
+      }
+
+      function splitTemplate(template) {
+        const index = template.indexOf(BLANK_MARKER);
+        return index === -1
+          ? { before: template, after: "" }
+          : { before: template.slice(0, index), after: template.slice(index + BLANK_MARKER.length) };
+      }
+
+      function buildFilledText(template, value) {
+        const filled = String(value ?? "").trim();
+        return template.replace(BLANK_MARKER, filled === "" ? BLANK_PLACEHOLDER : filled);
+      }
+
+      // ---- 保存 ----
+      // 端末に残すのは「やってみた」の回番号だけ。
+      // 入力した言葉は、授業記録や子どもの発言に触れるため一切保存しない。
+
+      function getStorage() {
+        try {
+          const probe = window.localStorage;
+          probe.setItem("__probe__", "1");
+          probe.removeItem("__probe__");
+          return probe;
+        } catch {
+          return null;
+        }
+      }
+
+      const storage = getStorage();
+      let storageAvailable = Boolean(storage);
+
+      function loadTried() {
+        if (!storage) return [];
+        try {
+          const raw = JSON.parse(storage.getItem(STORAGE_KEY) ?? "[]");
+          return Array.isArray(raw)
+            ? raw.filter((id) => Number.isInteger(id) && id >= 1 && id <= TOTAL)
+            : [];
+        } catch {
+          return [];
+        }
+      }
+
+      let tried = loadTried();
+
+      function persist() {
+        if (!storageAvailable) return;
+        try {
+          storage.setItem(STORAGE_KEY, JSON.stringify(tried));
+        } catch {
+          storageAvailable = false;
+          storageWarning.hidden = false;
+        }
+      }
+
+      const isTried = (id) => tried.includes(id);
+
+      // ---- 画面の状態 ----
+
+      let activeCategory = "all";
+      let selectedLevel = 1;
+      let recommendedLevel = null;
+      let onlyRecommended = false;
+      let activeId = null;
+      let returnFocus = null;
+      let returnId = null;
+      let toastTimer;
+      let toastMessage = "";
+      let closeHandled = true;
+      // 利用者が書いた言葉。端末にも保存せず、画面を閉じると消える。
+      let blankDraft = "";
+
+      const listRoot = document.querySelector("#challenge-list");
+      const filtersRoot = document.querySelector("#filters");
+      const summaryRoot = document.querySelector("#summary");
+      const dialog = document.querySelector("#challenge-dialog");
+      const dialogTitle = document.querySelector("#dialog-title");
+      const detailRoot = document.querySelector("#challenge-detail");
+      const closeButton = document.querySelector("#close-dialog");
+      const toast = document.querySelector("#toast");
+      const dialogToast = document.querySelector("#dialog-toast");
+      const storageWarning = document.querySelector("#storage-warning");
+      const resetControls = document.querySelector(".reset-controls");
+      const resetButton = document.querySelector("#reset-tried");
+      const resetConfirmation = document.querySelector("#reset-confirmation");
+      const confirmResetButton = document.querySelector("#confirm-reset");
+      const cancelResetButton = document.querySelector("#cancel-reset");
+      const levelMapRoot = document.querySelector("#level-map");
+      const levelGuideRoot = document.querySelector("#level-guide");
+      const todayPrompt = document.querySelector("#today-prompt");
+      const todayMeta = document.querySelector("#today-meta");
+      const resultBanner = document.querySelector("#diagnosis-result");
+      const typeResult = document.querySelector("#type-result");
+
+      // ---- 通知 ----
+
+      function renderToast() {
+        const inDialog = dialog.open;
+        toast.textContent = inDialog ? "" : toastMessage;
+        dialogToast.textContent = inDialog ? toastMessage : "";
+      }
+
+      function showToast(message) {
+        clearTimeout(toastTimer);
+        toastMessage = message;
+        renderToast();
+        toastTimer = setTimeout(() => {
+          toastMessage = "";
+          renderToast();
+        }, 3500);
+      }
+
+      async function copyText(text, message) {
+        try {
+          if (!navigator.clipboard?.writeText) throw new Error("clipboard unavailable");
+          await navigator.clipboard.writeText(text);
+          showToast(message);
+          return true;
+        } catch {
+          showToast("コピーできませんでした。文章を選んでコピーしてください。");
+          return false;
+        }
+      }
+
+      // ---- 相談の型の一覧 ----
+
+      function renderModeLegend() {
+        const root = document.querySelector("#mode-legend");
+        root.replaceChildren(...data.modes.map((mode) => el("li", {}, [
+          el("span", { className: "chip chip--" + mode.id }, [
+            createIcon(mode.icon, 16),
+            el("span", { text: mode.name }),
+          ]),
+          el("span", { text: " " + mode.description }),
+        ])));
+      }
+
+      // ---- 活用タイプと実践 ----
+
+      function renderTypes() {
+        document.querySelector("#type-grid").replaceChildren(...data.types.map((type) =>
+          el("article", { className: "type-card", style: "--type-color:" + type.color }, [
+            el("p", { className: "type-card__verb", text: type.verb }),
+            el("h3", { text: type.name }),
+            el("p", { text: type.description }),
+          ])));
+
+        document.querySelector("#practice-list").replaceChildren(...data.practices.map((practice, index) =>
+          el("li", { className: practice.scope === "application" ? "practice practice--application" : "practice" }, [
+            el("span", { className: "practice__num", text: String(index + 1) }),
+            el("div", {}, [
+              el("h3", { text: practice.title }),
+              el("p", { text: practice.description }),
+              practice.scope === "application"
+                ? el("span", { className: "practice__scope", text: "授業外の応用・安全確認が必要" })
+                : null,
+            ]),
+          ])));
+      }
+
+      // ---- 試した数 ----
+
+      function renderSummary() {
+        summaryRoot.replaceChildren(
+          el("p", { className: "summary__count" }, [
+            el("strong", { text: String(tried.length) }),
+            document.createTextNode(" / " + TOTAL + " 回を試しました"),
+          ]),
+          el("p", {
+            className: "field-note",
+            text: "順番も速さも自由です。1日に何回やっても、やらない日があってもかまいません。",
+          }),
+        );
+      }
+
+      // ---- 段階マップ ----
+
+      function renderLevelMap() {
+        levelMapRoot.replaceChildren(...data.levels.map((level) => {
+          const selected = level.id === selectedLevel;
+          const state = selected
+            ? "現在表示中"
+            : recommendedLevel === level.id ? "おすすめ" : "";
+          return el("li", {}, [
+            el("button", {
+              type: "button",
+              className: "level-button",
+              style: "--level-color:" + level.color,
+              "data-pick-level": String(level.id),
+              "aria-pressed": String(selected),
+            }, [
+              el("span", { className: "level-button__step", text: "STEP " + level.id }),
+              el("span", { className: "level-button__name", text: level.name }),
+              el("span", { className: "level-button__verb", text: level.verb }),
+              el("span", { className: "level-button__state", text: state }),
+            ]),
+          ]);
+        }));
+      }
+
+      function renderLevelGuide() {
+        const level = levelById[selectedLevel];
+        const cell = (heading, items) => el("div", { className: "level-guide__cell" }, [
+          el("h4", { text: heading }),
+          el("ul", {}, items.map((item) => el("li", { text: item }))),
+        ]);
+
+        levelGuideRoot.setAttribute("style", "--guide-color:" + level.color);
+        levelGuideRoot.replaceChildren(
+          el("div", { className: "level-guide__head" }, [
+            el("span", { className: "level-guide__number", text: String(level.id) }),
+            el("div", {}, [
+              el("h3", { text: level.name + "｜" + level.verb }),
+              el("p", { text: level.summary }),
+            ]),
+          ]),
+          el("div", { className: "level-guide__grid" }, [
+            cell("今できていること", level.doing),
+            cell("次に伸ばすこと", level.grow),
+            cell("今はやらなくてよいこと", level.skip),
+          ]),
+          el("p", { className: "level-guide__next" }, [
+            el("strong", { text: "一つ上へ進む小さな課題" }),
+            el("span", { text: level.next }),
+          ]),
+        );
+      }
+
+      function casesForLevel(levelId) {
+        return data.cases.filter((item) => item.level === levelId);
+      }
+
+      // その段階に該当する回がない場合は、いちばん近い段階の回を出す。
+      function featuredCase() {
+        const exact = casesForLevel(selectedLevel);
+        if (exact.length > 0) return exact.find((item) => !isTried(item.id)) ?? exact[0];
+        const sorted = [...data.cases].sort(
+          (a, b) => Math.abs(a.level - selectedLevel) - Math.abs(b.level - selectedLevel));
+        return sorted[0];
+      }
+
+      function renderToday() {
+        const item = featuredCase();
+        todayPrompt.textContent = "「" + item.prompt + "」";
+        todayMeta.textContent = levelById[item.level].name
+          + "｜" + categoryName[item.category]
+          + "｜" + modeById[item.mode].name
+          + "｜" + sendTypeById[item.send].short;
+        document.querySelector("#today-open").dataset.open = String(item.id);
+        document.querySelector("#today-copy").dataset.copyCase = String(item.id);
+      }
+
+      function selectLevel(levelId, source = "manual") {
+        selectedLevel = levelId;
+        renderLevelMap();
+        renderLevelGuide();
+        renderToday();
+        // 絞り込みボタンのラベルに段階の名前が入るので、選び直すたびに描き直す。
+        renderFilters();
+        if (source === "manual") {
+          resultBanner.hidden = true;
+          typeResult.hidden = true;
+        }
+        if (onlyRecommended) renderCards();
+      }
+
+      // ---- 絞り込み ----
+
+      function visibleCases() {
+        return data.cases.filter((item) => {
+          if (activeCategory !== "all" && item.category !== activeCategory) return false;
+          if (onlyRecommended && item.level !== selectedLevel) return false;
+          return true;
+        });
+      }
+
+      function renderFilters() {
+        const counts = data.categories.map((category) => ({
+          ...category,
+          count: data.cases.filter((item) => item.category === category.id).length,
+        }));
+        const definitions = [{ id: "all", name: "すべて", count: TOTAL }, ...counts];
+
+        filtersRoot.replaceChildren(
+          el("p", { className: "filter-bar__label", text: "授業改善の場面でしぼりこむ" }),
+          el("ul", { className: "filter-list" }, definitions.map((item) => el("li", {}, [
+            el("button", {
+              type: "button",
+              className: "filter-button",
+              "data-filter": item.id,
+              "aria-pressed": String(activeCategory === item.id),
+            }, [
+              el("span", { text: item.name }),
+              el("span", { className: "filter-button__count", text: String(item.count) }),
+            ]),
+          ]))),
+          el("p", { className: "level-filter" }, [
+            el("button", {
+              type: "button",
+              "data-only-recommended": "1",
+              "aria-pressed": String(onlyRecommended),
+            }, [
+              createIcon("check", 16),
+              el("span", { text: "「" + levelById[selectedLevel].name + "」の回だけ表示" }),
+            ]),
+          ]),
+        );
+      }
+
+      // ---- 一覧 ----
+
+      function renderCard(item) {
+        const mode = modeById[item.mode];
+        const send = sendTypeById[item.send];
+        const done = isTried(item.id);
+
+        return el("article", {
+          className: done ? "card card--tried" : "card",
+          "data-challenge-id": String(item.id),
+        }, [
+          el("p", { className: "card__top" }, [
+            el("span", { className: "chip", text: categoryName[item.category] }),
+            el("span", { className: "chip chip--" + mode.id }, [
+              createIcon(mode.icon, 16),
+              el("span", { text: mode.name }),
+            ]),
+            el("span", { className: "chip chip--step", text: "STEP " + item.level }),
+          ]),
+          el("h3", { className: "card__prompt", text: "「" + item.prompt + "」" }),
+          el("p", { className: "card__note" }, [
+            createIcon(send.icon, 15),
+            el("span", { text: " " + send.short }),
+          ]),
+          el("p", { className: "card__status" }, done
+            ? [createIcon("check", 16), el("span", { text: "やってみた" })]
+            : [el("span", { text: "まだ" })]),
+          el("button", {
+            type: "button",
+            className: "card__open",
+            text: "ひらく",
+            "data-open": String(item.id),
+          }),
+        ]);
+      }
+
+      function renderCards() {
+        const items = visibleCases();
+        listRoot.replaceChildren(...(items.length > 0
+          ? items.map(renderCard)
+          : [el("p", { className: "empty-note", text: "この条件に当てはまる回はありません。絞り込みを変えてください。" })]));
+      }
+
+      // ---- 詳細 ----
+
+      function helpBlock(helpId) {
+        const body = HELP_TEXTS[helpId];
+        if (!body) return null;
+        const panel = el("span", {
+          className: "help__panel",
+          id: "help-" + helpId,
+          text: body,
+          hidden: true,
+        });
+        const button = el("button", {
+          type: "button",
+          className: "help__button",
+          "data-help": helpId,
+          "aria-expanded": "false",
+          "aria-controls": "help-" + helpId,
+        }, [createIcon("help", 16), el("span", { text: "くわしく" })]);
+
+        // マウスがない端末でも届くよう、押しても乗せても開く。
+        // 乗せて開いたものは離れれば閉じ、押して開いたものは押すまで開いたまま。
+        const setOpen = (open) => {
+          panel.hidden = !open;
+          button.setAttribute("aria-expanded", String(open));
+        };
+        button.addEventListener("mouseenter", () => {
+          if (button.dataset.pinned !== "true") setOpen(true);
+        });
+        button.addEventListener("mouseleave", () => {
+          if (button.dataset.pinned !== "true") setOpen(false);
+        });
+        return el("span", { className: "help" }, [button, panel]);
+      }
+
+      function stepList(steps, helpFor = {}) {
+        return el("ol", { className: "steps" }, steps.map((text, index) => el("li", {
+          className: "steps__item",
+          value: index + 1,
+        }, [
+          el("span", { text }),
+          helpFor[index] ? helpBlock(helpFor[index]) : null,
+        ])));
+      }
+
+      function sendBlock(item) {
+        const mode = modeById[item.mode];
+        const send = sendTypeById[item.send];
+        const helpFor = send.id === "attach"
+          ? { 0: "attach", 2: "once" }
+          : send.id === "paste" ? { 2: "once" } : {};
+
+        return el("section", { className: "block block--" + mode.id }, [
+          el("p", { className: "block__label" }, [
+            createIcon(send.icon, 18),
+            el("span", { text: "1回目に送る — " + send.label }),
+          ]),
+          stepList(send.steps, helpFor),
+          el("p", { className: "prompt", "data-prompt": "send", tabIndex: -1 }, [
+            el("span", { text: item.prompt }),
+            el("span", { className: "prompt__limits", text: promptLimits(item.send) }),
+          ]),
+          el("button", {
+            type: "button",
+            className: "copy-button",
+            "data-copy": "send",
+          }, [createIcon("copy", 18), el("span", { text: "この文章をコピー" })]),
+        ]);
+      }
+
+      function followBlock() {
+        const { before, after } = splitTemplate(FOLLOW_UP.template);
+        const input = el("input", {
+          type: "text",
+          id: "blank-input",
+          className: "blank-input",
+          value: blankDraft,
+          placeholder: FOLLOW_UP.hints[0],
+          autocomplete: "off",
+          maxLength: 60,
+        });
+        input.addEventListener("input", () => { blankDraft = input.value; });
+
+        return el("section", { className: "block block--fill" }, [
+          el("p", { className: "block__label" }, [
+            createIcon("pencil", 18),
+            el("span", { text: "2回目に送る — 空欄をうめて送る（全50回で共通）" }),
+          ]),
+          stepList(FOLLOW_UP.steps, { 1: "newmsg" }),
+          el("p", { className: "hints" }, [
+            el("span", { className: "hints__label", text: "例：" }),
+            ...FOLLOW_UP.hints.map((hint) => el("button", {
+              type: "button",
+              className: "hint",
+              text: hint,
+              "data-hint": hint,
+            })),
+          ]),
+          // 文そのものが入力欄。別に組み立て結果を置くと、携帯でキーボードに隠れる。
+          el("p", { className: "prompt prompt--fill", "data-prompt": "fill" }, [
+            el("span", { text: before }),
+            input,
+            el("span", { text: after }),
+          ]),
+          el("p", {
+            className: "field-note",
+            text: "名前など個人が分かる言葉は書かないでください。書いた言葉は端末にも保存されません。",
+          }),
+          el("button", {
+            type: "button",
+            className: "copy-button",
+            "data-copy": "fill",
+          }, [createIcon("copy", 18), el("span", { text: "うめた文をコピー" })]),
+        ]);
+      }
+
+      function renderDetail() {
+        const item = data.cases.find((entry) => entry.id === activeId);
+        if (!item) return;
+        const mode = modeById[item.mode];
+        const done = isTried(item.id);
+
+        dialogTitle.textContent = "第" + item.id + "回｜" + categoryName[item.category];
+
+        detailRoot.replaceChildren(
+          el("p", { className: "detail__meta" }, [
+            el("span", { className: "chip", text: categoryName[item.category] }),
+            el("span", { className: "chip chip--" + mode.id }, [
+              createIcon(mode.icon, 16),
+              el("span", { text: mode.name }),
+            ]),
+            el("span", { className: "chip chip--step", text: "STEP " + item.level + "｜" + levelById[item.level].name }),
+            done ? el("span", { className: "chip chip--tried" }, [
+              createIcon("check", 16), el("span", { text: "やってみた" }),
+            ]) : null,
+          ]),
+          el("div", { className: "detail__intro" }, [
+            el("p", { text: mode.description }),
+            el("p", { className: "field-note", text: "あなたが送るのは2回です。番号のついた2つが、自分で操作するところです。" }),
+          ]),
+          // 自分が送る2回にだけ番号が付く。AIの回答は番号を持たない。
+          el("div", { className: "stage-flow" }, [
+            sendBlock(item),
+            el("p", { className: "reply" }, [
+              createIcon("arrow", 18),
+              el("span", {}, [
+                el("span", { className: "reply__label", text: "AIの回答" }),
+                el("span", { text: REPLY_NOTE }),
+                el("span", { className: "reply__decide", text: DECIDE_NOTE }),
+              ]),
+            ]),
+            followBlock(),
+          ]),
+          el("p", { className: "closing-note" }, [
+            createIcon("flag", 16),
+            el("span", { text: CLOSING_NOTE }),
+          ]),
+          el("p", { className: "safety" }, [
+            createIcon("warning", 16),
+            el("span", { text: item.note + SAFETY_BASE }),
+          ]),
+          el("div", { className: "detail__actions" }, [
+            el("button", {
+              type: "button",
+              className: done ? "tried-button tried-button--on" : "tried-button",
+              "data-toggle-tried": String(item.id),
+              "aria-pressed": String(done),
+            }, [createIcon("check", 18), el("span", { text: done ? "やってみた" : "やってみたことにする" })]),
+            el("button", {
+              type: "button",
+              className: "quiet-button",
+              text: "この回のURLをコピー",
+              "data-share": String(item.id),
+            }),
+          ]),
+        );
+      }
+
+      function openChallenge(id, { updateHash = true, source = null } = {}) {
+        const item = data.cases.find((entry) => entry.id === id);
+        if (!item) return;
+        if (source && !dialog.open) {
+          returnFocus = source;
+          returnId = item.id;
+        }
+        activeId = item.id;
+        blankDraft = "";
+        closeHandled = false;
+        renderDetail();
+        if (!dialog.open) dialog.showModal();
+        renderToast();
+        if (updateHash && window.location.hash !== "#c-" + item.id) {
+          window.location.hash = "c-" + item.id;
+        }
+        closeButton.focus();
+      }
+
+      // close イベントの発火はブラウザによって差があるため、閉じる処理から直接も呼ぶ。
+      function finishClose() {
+        if (closeHandled) return;
+        closeHandled = true;
+        activeId = null;
+        blankDraft = "";
+        if (/^#c-\d+$/.test(window.location.hash)) {
+          history.replaceState(null, "", window.location.pathname + window.location.search);
+        }
+        const replacement = returnId ? listRoot.querySelector('[data-open="' + returnId + '"]') : null;
+        const target = returnFocus?.isConnected ? returnFocus : replacement;
+        returnFocus = null;
+        returnId = null;
+        renderToast();
+        if (target?.isConnected) target.focus();
+        else document.querySelector("#main").focus();
+      }
+
+      function closeDialog() {
+        if (dialog.open) dialog.close();
+        finishClose();
+      }
+
+      function promptTextFor(name) {
+        const item = data.cases.find((entry) => entry.id === activeId);
+        if (!item) return "";
+        if (name === "fill") return buildFilledText(FOLLOW_UP.template, blankDraft);
+        return item.prompt + "\n\n" + promptLimits(item.send);
+      }
+
+      function toggleTried(id) {
+        tried = isTried(id) ? tried.filter((entry) => entry !== id) : [...tried, id];
+        persist();
+        renderSummary();
+        renderCards();
+        renderToday();
+        if (activeId) renderDetail();
+        showToast(isTried(id) ? "やってみた記録をつけました" : "やってみた記録を外しました");
+      }
+
+      function closeResetConfirmation() {
+        resetConfirmation.hidden = true;
+        resetButton.setAttribute("aria-expanded", "false");
+        resetButton.focus();
+      }
+
+      function resetTried() {
+        let cleared = false;
+        if (storage) {
+          try {
+            storage.removeItem(STORAGE_KEY);
+            cleared = true;
+          } catch {
+            storageAvailable = false;
+            storageWarning.hidden = false;
+          }
+        }
+        tried = [];
+        renderSummary();
+        renderCards();
+        renderToday();
+        if (activeId) renderDetail();
+        closeResetConfirmation();
+        showToast(cleared ? "記録を消しました" : "端末に保存された記録を削除できませんでした");
+      }
+
+      // ---- 診断 ----
+      // 5問で今の段階を出し、6問目で活用タイプを見る。
+      // 点数そのものは見せない。この画面は順位ではなく、最初の1回を選ぶためのもの。
+
+      const diagnosisDialog = document.querySelector("#diagnosis-dialog");
+      const questionArea = document.querySelector("#question-area");
+      const progressBar = document.querySelector("#progress-bar");
+      const progressTrack = document.querySelector("#progress-track");
+      const prevButton = document.querySelector("#prev-question");
+      const nextButton = document.querySelector("#next-question");
+
+      const answers = Array(data.questions.length).fill(null);
+      const selectedPractices = new Set();
+      // 活用経験の確認を最後の1問として数える。
+      const TOTAL_STEPS = data.questions.length + 1;
+      let currentQuestion = 0;
+      let inPracticeCheck = false;
+
+      function setProgress(stepNumber, label) {
+        progressBar.style.width = (stepNumber / TOTAL_STEPS) * 100 + "%";
+        progressTrack.setAttribute("aria-label", label);
+      }
+
+      function renderQuestion() {
+        inPracticeCheck = false;
+        const question = data.questions[currentQuestion];
+        setProgress(currentQuestion + 1, TOTAL_STEPS + "問中" + (currentQuestion + 1) + "問目");
+
+        questionArea.replaceChildren(
+          el("p", { className: "question__number", text: "質問 " + (currentQuestion + 1) + " / " + TOTAL_STEPS }),
+          el("fieldset", {}, [
+            el("legend", { text: question.text }),
+            el("div", { className: "option-list" }, question.options.map((option) => {
+              const input = el("input", {
+                type: "radio",
+                name: "diagnosis-answer",
+                value: String(option.score),
+                checked: answers[currentQuestion] === option.score,
+              });
+              input.addEventListener("change", () => { answers[currentQuestion] = option.score; });
+              return el("label", { className: "option" }, [input, el("span", { text: option.label })]);
+            })),
+          ]),
+        );
+        prevButton.disabled = currentQuestion === 0;
+        nextButton.textContent = "次へ";
+      }
+
+      function renderPracticeCheck() {
+        inPracticeCheck = true;
+        setProgress(TOTAL_STEPS, TOTAL_STEPS + "問中" + TOTAL_STEPS + "問目");
+
+        questionArea.replaceChildren(
+          el("p", { className: "question__number", text: "質問 " + TOTAL_STEPS + " / " + TOTAL_STEPS }),
+          el("fieldset", {}, [
+            el("legend", { text: "これまでに使ったことがあるものは？" }),
+            el("p", { className: "question__note", text: "複数選べます。段階には影響せず、あなたの活用タイプを見るためだけに使います。一つもなくてかまいません。" }),
+            el("div", { className: "option-list" }, data.practices.map((practice) => {
+              const input = el("input", {
+                type: "checkbox",
+                value: practice.id,
+                checked: selectedPractices.has(practice.id),
+              });
+              input.addEventListener("change", () => {
+                if (input.checked) selectedPractices.add(practice.id);
+                else selectedPractices.delete(practice.id);
+              });
+              return el("label", { className: "option" }, [
+                input,
+                el("span", { text: practice.title + (practice.scope === "application" ? "（授業外の応用）" : "") }),
+              ]);
+            })),
+          ]),
+        );
+        prevButton.disabled = false;
+        nextButton.textContent = "結果を見る";
+      }
+
+      function startDiagnosis() {
+        currentQuestion = 0;
+        inPracticeCheck = false;
+        renderQuestion();
+        diagnosisDialog.showModal();
+      }
+
+      function restartDiagnosis() {
+        answers.fill(null);
+        selectedPractices.clear();
+        recommendedLevel = null;
+        resultBanner.hidden = true;
+        typeResult.hidden = true;
+        startDiagnosis();
+      }
+
+      function activeTypes() {
+        const scores = Object.fromEntries(data.types.map((type) => [type.id, 0]));
+        for (const practiceId of selectedPractices) {
+          const practice = data.practices.find((item) => item.id === practiceId);
+          for (const typeId of practice?.types ?? []) scores[typeId] += 1;
+        }
+        const highest = Math.max(0, ...Object.values(scores));
+        return highest === 0 ? [] : data.types.filter((type) => scores[type.id] === highest);
+      }
+
+      function finishDiagnosis() {
+        const score = answers.reduce((sum, value) => sum + value, 0);
+        const level = data.levels.find((item) => score >= item.min && score <= item.max) ?? data.levels[0];
+        const types = activeTypes();
+
+        recommendedLevel = level.id;
+        diagnosisDialog.close();
+        selectLevel(level.id, "diagnosis");
+
+        document.querySelector("#result-title").textContent = "今なら「" + level.name + "」から始めるのがよさそうです";
+        document.querySelector("#result-reason").textContent = level.summary + "この下に、その段階の回を1つ出しています。";
+        resultBanner.hidden = false;
+
+        typeResult.replaceChildren(...(types.length > 0
+          ? [
+              el("h3", { text: "あなたの活用タイプ" }),
+              el("p", { text: "よく使っている場面から、次のタイプが強く表れています。優劣ではなく、得意な使い方の方向です。" }),
+              el("div", { className: "type-chips" }, types.map((type) =>
+                el("span", { className: "type-chip", style: "--type-color:" + type.color, text: type.name + "｜" + type.verb }))),
+            ]
+          : [
+              el("h3", { text: "活用タイプは、これから選べます" }),
+              el("p", { text: "まだ経験がなくても問題ありません。下の50回から一つ試すと、得意な使い方が見えてきます。" }),
+            ]));
+        typeResult.hidden = false;
+
+        document.querySelector("#today").scrollIntoView({ behavior: "smooth", block: "start" });
+        showToast(level.name + "から始めることをおすすめします");
+      }
+
+      // ---- 操作 ----
+
+      document.addEventListener("click", (event) => {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        if (button.hasAttribute("data-start-diagnosis")) {
+          startDiagnosis();
+        } else if (button.dataset.pickLevel) {
+          selectLevel(Number(button.dataset.pickLevel));
+        } else if (button.dataset.onlyRecommended) {
+          onlyRecommended = !onlyRecommended;
+          renderFilters();
+          renderCards();
+        } else if (button.dataset.filter) {
+          activeCategory = button.dataset.filter;
+          renderFilters();
+          renderCards();
+        } else if (button.dataset.open) {
+          openChallenge(Number(button.dataset.open), { source: button });
+        } else if (button.dataset.copyCase) {
+          const item = data.cases.find((entry) => entry.id === Number(button.dataset.copyCase));
+          if (item) copyText(item.prompt + "\n\n" + promptLimits(item.send), "コピーしました。ChatGPTなどの生成AIを開いて貼り付けてください。");
+        } else if (button.dataset.copy) {
+          const text = promptTextFor(button.dataset.copy);
+          if (text) copyText(text, "コピーしました。ChatGPTなどの生成AIを開いて貼り付けてください。");
+        } else if (button.dataset.hint) {
+          const input = detailRoot.querySelector("#blank-input");
+          if (input) {
+            input.value = button.dataset.hint;
+            blankDraft = button.dataset.hint;
+            input.focus();
+          }
+        } else if (button.dataset.help) {
+          const panel = detailRoot.querySelector("#help-" + button.dataset.help);
+          if (panel) {
+            const pinned = button.dataset.pinned === "true";
+            button.dataset.pinned = String(!pinned);
+            panel.hidden = pinned;
+            button.setAttribute("aria-expanded", String(!pinned));
+          }
+        } else if (button.dataset.toggleTried) {
+          toggleTried(Number(button.dataset.toggleTried));
+        } else if (button.dataset.share) {
+          const url = window.location.origin + window.location.pathname + "#c-" + button.dataset.share;
+          copyText(url, "この回のURLをコピーしました");
+        } else if (button === resetButton) {
+          resetConfirmation.hidden = false;
+          resetButton.setAttribute("aria-expanded", "true");
+          confirmResetButton.focus();
+        } else if (button === confirmResetButton) {
+          resetTried();
+        } else if (button === cancelResetButton) {
+          closeResetConfirmation();
+        }
+      });
+
+      closeButton.addEventListener("click", closeDialog);
+      dialog.addEventListener("close", finishClose);
+      dialog.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeDialog();
+        }
+      });
+
+      document.querySelector("#close-diagnosis").addEventListener("click", () => diagnosisDialog.close());
+      document.querySelector("#restart-diagnosis").addEventListener("click", restartDiagnosis);
+
+      prevButton.addEventListener("click", () => {
+        if (inPracticeCheck) {
+          currentQuestion = data.questions.length - 1;
+          renderQuestion();
+        } else if (currentQuestion > 0) {
+          currentQuestion -= 1;
+          renderQuestion();
+        }
+      });
+
+      nextButton.addEventListener("click", () => {
+        if (inPracticeCheck) {
+          finishDiagnosis();
+          return;
+        }
+        if (answers[currentQuestion] === null) {
+          showToast("一つ選んでから次へ進んでください");
+          return;
+        }
+        if (currentQuestion < data.questions.length - 1) {
+          currentQuestion += 1;
+          renderQuestion();
+        } else {
+          renderPracticeCheck();
+        }
+      });
+
+      window.addEventListener("hashchange", () => {
+        const match = /^#c-(\d+)$/.exec(window.location.hash);
+        if (match) openChallenge(Number(match[1]), { updateHash: false });
+        else if (window.location.hash === "" && dialog.open) closeDialog();
+      });
+
+      // ---- 初期表示 ----
+
+      if (!storageAvailable) storageWarning.hidden = false;
+      resetControls.hidden = false;
+      document.querySelector("#question-count").textContent = "（全" + TOTAL_STEPS + "問）";
+
+      renderModeLegend();
+      renderTypes();
+      renderSummary();
+      renderLevelMap();
+      renderLevelGuide();
+      renderToday();
+      renderFilters();
+      renderCards();
+
+      const initial = /^#c-(\d+)$/.exec(window.location.hash);
+      if (initial) openChallenge(Number(initial[1]), { updateHash: false });
+    })();
+  </script>
+</body>
+</html>
