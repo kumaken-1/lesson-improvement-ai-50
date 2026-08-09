@@ -120,6 +120,49 @@
 
     .skip-link:focus { transform: translateY(0); }
 
+    /* シリーズの巻を横並びで置く。いまいる巻はリンクにせず、現在地として示す。 */
+    .volumes {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.2rem 0.6rem;
+      max-width: 60rem;
+      margin-inline: auto;
+      padding: 0.35rem 1rem;
+      border-block-end: 1px solid #dce6e5;
+      font-size: 0.9rem;
+    }
+
+    .volumes__label,
+    .volumes__note {
+      color: #5b6b7a;
+      font-size: 0.82rem;
+    }
+
+    .volumes__list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.15rem 0.5rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .volumes__list a,
+    .volumes__current {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding-inline: 0.5rem;
+      border-radius: 0.4rem;
+    }
+
+    .volumes__current {
+      background: #eef2f7;
+      color: #24313f;
+      font-weight: 700;
+    }
+
     .hero {
       padding: clamp(2.5rem, 7vw, 5rem) max(1.5rem, calc((100% - var(--content-width)) / 2));
       color: #fff;
@@ -1092,6 +1135,18 @@
 </head>
 <body>
   <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <nav class="volumes" aria-label="シリーズの他の巻">
+    <span class="volumes__label">シリーズ</span>
+    <ul class="volumes__list">
+      <li><a href="https://kumaken-1.github.io/generative-ai-summer-research-30/" title="生成AI 30のチャレンジⅠ">Ⅰ　はじめて</a></li>
+      <li><a href="https://kumaken-1.github.io/school-office-generative-ai-30/" title="生成AI 30のチャレンジⅡ～校務編～">Ⅱ　校務</a></li>
+      <li><span class="volumes__current" aria-current="page" title="生成AI 50のチャレンジⅢ ～授業改善で使える生成AI～">Ⅲ　授業改善</span></li>
+      <li><a href="https://kumaken-1.github.io/lesson-improvement-ai-30/" title="生成AI 30のチャレンジⅣ ～授業改善を生成AIとの対話で進める～">Ⅳ　授業改善を深く</a></li>
+      <li><a href="https://kumaken-1.github.io/inquiry-learning-ai-50/" title="生成AI 50のチャレンジⅤ ～総合・生活科～">Ⅴ　総合・生活科</a></li>
+    </ul>
+    <span class="volumes__note">記録は巻ごとに別々です。</span>
+  </nav>
 
   <header class="hero">
     <div class="hero__inner">
