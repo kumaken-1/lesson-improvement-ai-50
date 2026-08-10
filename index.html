@@ -222,6 +222,35 @@
     .guide ul { margin-block-end: 0; padding-inline-start: 1.3rem; }
     .guide li { margin-block-end: 0.35rem; }
 
+    /* 使い方の下に畳んである補足。開かなくても始められるものだけを入れる。
+       最初の画面に説明を並べると、読む前に「面倒そう」で閉じられる。 */
+    .more {
+      margin-block-start: 1rem;
+      padding-block-start: 0.75rem;
+      border-block-start: 1px solid #e3ebea;
+    }
+
+    .more > summary,
+    .guide--fold > summary {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      font-weight: 700;
+      color: var(--focus);
+      cursor: pointer;
+    }
+
+    .more > summary { font-size: 0.95rem; }
+    .guide--fold > summary { font-size: 1.1rem; }
+
+    .more > summary:hover,
+    .guide--fold > summary:hover { text-decoration: underline; }
+
+    .more > *:not(summary),
+    .guide--fold > *:not(summary) { font-size: 0.95rem; }
+
+    .guide--fold[open] > summary { margin-block-end: 0.5rem; }
+
     .summary__count { margin-block-end: 0.25rem; font-size: 1.05rem; }
     .summary__count strong { font-size: 1.6rem; }
 
@@ -1160,19 +1189,25 @@
   <main id="main" class="site-main" tabindex="-1">
     <section class="guide" aria-labelledby="guide-title">
       <h2 id="guide-title">使い方</h2>
-      <p>1回10分ほどです。完成した指導案を作る講座ではありません。教材研究、子どもの現在地、問い、活動と対話、見取り、授業後の見直しのどこか一点について、自分の判断を一つ前へ進めることが目的です。</p>
-      <p>回をひらくと、<strong>1回目に送る文</strong>、<strong>回答が来たら何を見るか</strong>、<strong>2回目に送る文</strong>の順に並んでいます。自分が送るのは2回です。2回目の文は全50回で共通で、空欄に自分の見立てを書いてから送ります。</p>
-      <p>AIに送る文には、<strong>Web検索をせず、渡した情報だけを使い、各項目を2文以内にする</strong>という制約が全50回とも付いています。長く整った回答や、検索してきた権威ある記述は、教師の判断を弱めます。この講座で必要なのは、短時間で吟味できる分量の回答です。</p>
-      <p>AIの回答は完成品ではなく材料です。読んだら、採用するか、直すか、使わないかを決めます。<strong>使わないという判断も、その回の結論です。</strong></p>
-      <p>最後に、次の授業で変える一点を一行だけ書き留めます。書く場所はこの画面ではなく、手元の手帳や指導案です。<strong>この画面は入力した言葉を一切保存しません。</strong>保存するのは「やってみた」の印だけです。</p>
-      <p>学習指導要領の記述や教科の理論をAIに尋ねる回はありません。AIは平然と存在しない記述を作ります。事実は原典で確かめてください。この講座でAIに渡すのは、自分が持っている教材、授業案、授業記録、自分の考えだけです。</p>
+      <p>1回10分です。気になった回をひらくと、<strong>1回目に送る文</strong>、<strong>回答が来たら何を見るか</strong>、<strong>2回目に送る文</strong>が順に並んでいます。文をコピーして、ChatGPTなどの生成AIに貼り付けて送ってください。</p>
+      <p>AIの回答は完成品ではなく、考えるための材料です。採用するか、直すか、使わないかを決めるのは自分です。<strong>使わないという判断も、その回の結論です。</strong></p>
+      <p><strong>この画面は、入力した言葉を一切保存しません。</strong>保存するのは「やってみた」の印だけです。</p>
+      <p>どこから始めるか迷ったら、下の診断を使ってください。<strong>段階は能力の順位ではありません。</strong></p>
+
+      <details class="more">
+        <summary>もう少しくわしく</summary>
+        <p>完成した指導案を作る講座ではありません。教材研究、子どもの現在地、問い、活動と対話、見取り、授業後の見直しのどこか一点について、<strong>自分の判断を一つ前へ進める</strong>ことを1回の単位にしています。</p>
+        <p>自分が送るのは2回です。2回目の文は全50回で共通で、空欄に自分の見立てを書いてから送ります。</p>
+        <p>送る文には全50回とも<strong>「Web検索をせず、渡した情報だけを使い、各項目は2文以内で」</strong>という制約が付いています。長く整った回答は、教師の判断を弱めるからです。同じ理由で、学習指導要領や教科の理論をAIに尋ねる回はありません。<strong>AIは平然と、存在しない記述を作ります。</strong>渡すのは、自分の教材、授業案、授業記録、自分の考えだけです。</p>
+        <p>各回の終わりに、次の授業で変える一点を一行だけ書き留めます。<strong>書く場所はこの画面ではなく、手元の手帳や指導案です。</strong></p>
+      </details>
     </section>
 
-    <section class="guide" aria-labelledby="modes-title">
-      <h2 id="modes-title">50回に散りばめてある6つの相談の型</h2>
-      <p>「指導案を作って」だけが生成AIの使い方ではありません。50回のケースには、次の6つの頼み方が仕込んであります。読み進めるうちに自然と身につきますが、先に知っておきたい人のために挙げておきます。</p>
+    <details class="guide guide--fold">
+      <summary id="modes-title">50回に散りばめてある6つの相談の型</summary>
+      <p>「指導案を作って」だけが生成AIの使い方ではありません。50回のケースには、次の6つの頼み方が仕込んであります。読み進めるうちに自然と身につきます。</p>
       <ul id="mode-legend"></ul>
-    </section>
+    </details>
 
     <aside class="storage-warning" role="note">
       <strong>入力前の約束。</strong>児童生徒の実名、成績、健康、家庭のことは入力しません。名前は「児童A」などに置き換えます。AIの回答は判定ではなく、教師が考えるための別の見方として扱います。
