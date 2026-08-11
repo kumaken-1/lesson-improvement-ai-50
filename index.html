@@ -139,6 +139,17 @@
       font-size: 0.82rem;
     }
 
+    /* シリーズの入口(ai-challenge)へ戻るリンク。個々の巻の一覧より前に置く。 */
+    .volumes__home {
+      color: var(--focus);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .volumes__home:hover {
+      text-decoration: underline;
+    }
+
     .volumes__list {
       display: flex;
       flex-wrap: wrap;
@@ -1166,6 +1177,7 @@
   <a class="skip-link" href="#main">本文へスキップ</a>
 
   <nav class="volumes" aria-label="シリーズの他の巻">
+    <a class="volumes__home" href="https://kumaken-1.github.io/ai-challenge/">全巻の入口へ</a>
     <span class="volumes__label">シリーズ</span>
     <ul class="volumes__list">
       <li><a href="https://kumaken-1.github.io/generative-ai-summer-research-30/" title="生成AI 30のチャレンジⅠ">Ⅰ　はじめて</a></li>
